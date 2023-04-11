@@ -1,0 +1,9 @@
+.user-select{
+    border: 1px solid #f0f1f5 !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+    border-radius: 12px !important;
+}
+select:required:invalid {
+    color: gray;
+  }
