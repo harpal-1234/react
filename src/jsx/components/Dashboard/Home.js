@@ -649,7 +649,7 @@ const Home = () => {
         </div> */}
       </div>
       <div>
-      <Col xl={6} lg={6}>
+      <Col xl={9} lg={10}>
           <Card>
             <Card.Header>
               <Card.Title>Line chart</Card.Title>

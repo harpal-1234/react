@@ -240,7 +240,7 @@ export default function UserManagement() {
                   </tr>
                 ))} */}
                 <tr>
-                <td><img src=""/></td>
+                <td><img src="#" alt="image"/></td>
                   <td>Ram</td>
                   <td>hello@email.com</td>
                   <td>1234567890</td>
@@ -262,7 +262,7 @@ export default function UserManagement() {
                       <Dropdown.Menu>
                         <Dropdown.Item>Approve Profile</Dropdown.Item>
                         <Dropdown.Item>Download</Dropdown.Item>
-                        <Dropdown.Item>Disable</Dropdown.Item>
+                        <Dropdown.Item>Deactive</Dropdown.Item>
                         <Dropdown.Item>Delete</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

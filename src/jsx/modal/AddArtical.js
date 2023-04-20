@@ -131,16 +131,16 @@ export default function AddArtical({ show, onHide }) {
                     </div>
                   </div>
                   <div className="form-group mb-3">
-                    <label className="text-black font-w500">Date</label>
+                    <label className="text-black font-w500">Category</label>
                     <div className="contact-name">
                       <input
-                        type="date"
+                        type="text"
                         className="form-control"
                         autocomplete="off"
                         name="Date_Join"
                         required="required"
                         onChange={handleAddFormChange}
-                        placeholder="date"
+                        placeholder="category"
                       />
                       <span className="validation-text"></span>
                     </div>

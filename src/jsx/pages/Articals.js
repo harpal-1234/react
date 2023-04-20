@@ -1,10 +1,9 @@
-
-import React, { useState } from 'react'
-import { Badge, Button, Card, Col, Dropdown, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify'
-import PageTitle from '../layouts/PageTitle'
-import AddArtical from '../modal/AddArtical';
+import React, { useState } from "react";
+import { Badge, Button, Card, Col, Dropdown, Table } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import PageTitle from "../layouts/PageTitle";
+import AddArtical from "../modal/AddArtical";
 
 export default function Articals() {
   const svg1 = (
@@ -33,10 +32,10 @@ export default function Articals() {
       />
       <PageTitle activeMenu="Artical List" motherMenu="Artical" />
       <div className="d-flex justify-content-end mb-3">
-          <Button className='btn btn-primary' onClick={() => setPostModal(true)}>
-            Add New +
-            </Button>
-        </div>
+        <Button className="btn btn-primary" onClick={() => setPostModal(true)}>
+          Add New +
+        </Button>
+      </div>
       <Col>
         <Card>
           {/* <Card.Header className="">
@@ -112,10 +111,10 @@ export default function Articals() {
             <Table>
               <thead style={{ color: "black" }}>
                 <tr>
-                <th >
+                  <th>
                     <strong>IMAGE</strong>
                   </th>
-                  <th >
+                  <th>
                     <strong>NAME</strong>
                   </th>
                   <th>
@@ -210,12 +209,14 @@ export default function Articals() {
                   </tr>
                 ))} */}
                 <tr>
-                <td><img src=""/></td>
+                  <td>
+                    <img src="#" />
+                  </td>
                   <td>Ram</td>
                   <td>hello@email.com</td>
                   <td>1234567890</td>
                   <td>Anything</td>
-                 
+
                   <td>
                     <Badge variant="success light">Active</Badge>
                   </td>
@@ -269,8 +270,8 @@ export default function Articals() {
           </Card.Body>
         </Card>
       </Col>
-          <AddArtical show={postModal} onHide={() => setPostModal(false)} />
+      <AddArtical show={postModal} onHide={() => setPostModal(false)} />
       {/* {loader && <Spinner />} */}
     </div>
-  )
+  );
 }

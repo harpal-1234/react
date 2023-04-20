@@ -237,13 +237,13 @@ class SideBar extends Component {
                 <span className="nav-text pl-4">Artical Management</span>
               </Link>
             </li>
-            <li className={`${reports.includes(path) ? "mm-active" : ""}`}>
+            {/* <li className={`${reports.includes(path) ? "mm-active" : ""}`}>
               <Link to="reports" className="ai-icon" >
-                {/* <i className="flaticon-381-settings-2"></i> */}
+                {/* <i className="flaticon-381-settings-2"></i> *
                 <img src={reportIcon} style={{ width: "25px" }}/>
                 <span className="nav-text pl-4">Reports</span>
               </Link>
-            </li>
+            </li> */}
             <li className={`${notification.includes(path) ? "mm-active" : ""}`}>
               <Link to="notifications" className="ai-icon" >
                 {/* <i className="flaticon-381-settings-2"></i> */}
@@ -258,7 +258,7 @@ class SideBar extends Component {
                 <span className="nav-text pl-4">Policy</span>
               </Link>
             </li>
-            <li className={`${app.includes(path) ? "mm-active" : ""}`}>
+            {/* <li className={`${app.includes(path) ? "mm-active" : ""}`}>
               <Link className="has-arrow ai-icon" to="#" >
                 <i className="flaticon-381-television"></i>
                 <span className="nav-text">Apps</span>
@@ -682,7 +682,7 @@ class SideBar extends Component {
 				<li>
 					<Link className={`${path === "uc-lightgallery" ? "mm-active" : ""}`} onClick={() => this.props.onClick()} to="/uc-lightgallery">Light Gallery</Link>
                 </li>
-                {/* <li><Link className={`${path === "posts" ? "mm-active" : ""}`} to="/posts">Posts</Link></li> */}
+                {/* <li><Link className={`${path === "posts" ? "mm-active" : ""}`} to="/posts">Posts</Link></li> 
               </ul>
             </li>
             <li className={`${redux.includes(path) ? "mm-active" : ""}`}>
@@ -815,9 +815,9 @@ class SideBar extends Component {
                     </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
           </MM>
-			<div className="add-menu-sidebar">
+			{/* <div className="add-menu-sidebar">
 				<img src={icon1} alt="" />
 				<p>Organize your menus through button bellow</p>
 				<Link to="#" className="btn btn-primary btn-block light">
@@ -841,7 +841,7 @@ class SideBar extends Component {
 				  ></span>{" "}
 				  by DexignZone
 				</p>
-			  </div>
+			  </div> */}
 			</PerfectScrollbar>
       </div>
     );
