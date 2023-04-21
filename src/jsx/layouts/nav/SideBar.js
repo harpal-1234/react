@@ -65,7 +65,8 @@ class SideBar extends Component {
         "user-management"
       ],
       artical = [
-        "artical-management"
+        "artical-management",
+        "advertise-management"
       ],
       reports = [
         "reports"
@@ -230,12 +231,39 @@ class SideBar extends Component {
                 <span className="nav-text pl-4">User Management</span>
               </Link>
             </li>
-            <li className={`${artical.includes(path) ? "mm-active" : ""}`}>
+            {/* <li className={`${artical.includes(path) ? "mm-active" : ""}`}>
               <Link to="artical-management" className="ai-icon" >
-                {/* <i className="flaticon-381-settings-2"></i> */}
+                {/* <i className="flaticon-381-settings-2"></i> *
                 <img src={articalIcon}/>
-                <span className="nav-text pl-4">Artical Management</span>
+                <span className="nav-text pl-4"></span>
               </Link>
+            </li> */}
+            <li className={`${artical.includes(path) ? "mm-active" : ""}`}>
+              <Link className="has-arrow ai-icon" to="#">
+                {/* <i className="flaticon-381-television"></i> */}
+                <img src={articalIcon} ></img>
+                <span className="nav-text pl-4">CMS</span>
+              </Link>
+              <ul>
+                <li>
+                  <Link
+                    className={`${path === "artical-management" ? "mm-active" : ""}`}
+                    onClick={() => this.props.onClick()}
+                    to="/artical-management"
+                  >
+                    Artical Management
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className={`${path === "advertise-management" ? "mm-active" : ""}`}
+                    onClick={() => this.props.onClick()}
+                    to="/advertise-management"
+                  >
+                    Advertise Management
+                  </Link>
+                </li>
+              </ul>
             </li>
             {/* <li className={`${reports.includes(path) ? "mm-active" : ""}`}>
               <Link to="reports" className="ai-icon" >

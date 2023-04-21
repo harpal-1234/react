@@ -115,16 +115,13 @@ export default function Articals() {
                     <strong>IMAGE</strong>
                   </th>
                   <th>
-                    <strong>NAME</strong>
-                  </th>
-                  <th>
-                    <strong>EMAIL</strong>
-                  </th>
-                  <th>
-                    <strong>PHONE NUMBER</strong>
-                  </th>
+                    <strong>TITLE</strong>
+                  </th> 
                   <th>
                     <strong>CATEGORY</strong>
+                  </th>
+                  <th>
+                    <strong>DESCRIPTION</strong>
                   </th>
                   <th>
                     <strong>STATUS</strong>
@@ -212,11 +209,9 @@ export default function Articals() {
                   <td>
                     <img src="#" />
                   </td>
-                  <td>Ram</td>
-                  <td>hello@email.com</td>
-                  <td>1234567890</td>
+                  <td>Hello</td>
                   <td>Anything</td>
-
+                  <td>hello helllo hello hello</td>
                   <td>
                     <Badge variant="success light">Active</Badge>
                   </td>

@@ -111,6 +111,7 @@ import Reports from './pages/Reports'
 import Notification from './pages/Notification'
 import Policies from './pages/Policies'
 import Articals from './pages/Articals'
+import AddsManagement from './pages/AddsManagement'
 
 
 const Markup = () => {
@@ -138,6 +139,7 @@ const Markup = () => {
 
     /// Events
     { url: 'artical-management', component: Articals }, 
+    { url: 'advertise-management', component: AddsManagement }, 
     /// reports
     { url: 'reports', component: Reports }, 
     /// notifications
