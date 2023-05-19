@@ -17,27 +17,27 @@ function ChangePassword({ password, onHide,props }) {
   // console.log(oldPassword, newPassword, confirmPassword, " on Change data");
 
   // const dispatch = useDispatch();
-//   const notifyTopRight = () => {
-//     toast.success("✅ Password Updated successfully !", {
-//       position: "top-right",
-//       autoClose: 5000,
-//       hideProgressBar: false,
-//       closeOnClick: true,
-//       pauseOnHover: true,
-//       draggable: true,
-//     });
-//   };
-//   const notifyError = (error) => {
-//     toast.error(`❌${error}`, {
-//       position: "top-right",
-//       autoClose: 5000,
-//       hideProgressBar: false,
-//       closeOnClick: true,
-//       pauseOnHover: true,
-//       draggable: true,
-//       progress: undefined,
-//     });
-//   };
+  const notifyTopRight = () => {
+    toast.success("✅ Password Updated successfully !", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+  const notifyError = (error) => {
+    toast.error(`❌${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
   function onChangePassword(e) {
     console.log("ffffffff")
     e.preventDefault();
@@ -68,24 +68,24 @@ function ChangePassword({ password, onHide,props }) {
       return;
     }
 
-    // changePasswoard(oldPassword, newPassword)
-    //   .then((response) => {
+    changePasswoard(oldPassword, newPassword)
+      .then((response) => {
 
-    //     setOldPassword("");
-    //     setNewPassword("");
-    //     setConfirmPassword("");
-    //     onHide();
-    //     notifyTopRight();
-    //   })
-    //   .catch((error) => {
-    //     console.log(error.response, "change password error");
-    //     setApiError(error.response.data.message);
-    //     notifyError(error.response.data.message);
-    //     if(error.response.data.statusCode === 401){
-    //       localStorage.clear("userDetails");
-    //       props.history.push("/login");
-    //     } 
-    //   });
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        onHide();
+        notifyTopRight("Updated Successfully.");
+      })
+      .catch((error) => {
+        console.log(error.response, "change password error");
+        // setApiError(error.response.data.message);
+        notifyError(error.response.data.message);
+        if(error.response.data.statusCode === 401){
+          localStorage.clear("tokenDetails");
+          props.history.push("/login");
+        } 
+      });
   }
   return (
     <>
@@ -103,7 +103,7 @@ function ChangePassword({ password, onHide,props }) {
     <Modal className="modal fade" show={password}>
       <div className="" role="document">
         <div className="">
-          <form>
+          <form onSubmit={onChangePassword}>
             <div className="modal-header">
               <h4 className="modal-title fs-20">Change Password</h4>
               {/* <button type="button" className="btn-close"  data-dismiss="modal"><span></span></button> */}
@@ -126,14 +126,14 @@ function ChangePassword({ password, onHide,props }) {
                         autocomplete="off"
                         name="name"
                       
-                        // value={oldPassword}
-                        // onChange={(e) => setOldPassword(e.target.value)}
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
                         placeholder="Enter your old password"
                       />
                       <span className="validation-text"></span>
-                      {/* {errors.oldPassword && (
+                      {errors.oldPassword && (
                     <div className="text-danger fs-12">{errors.oldPassword}</div>
-                  )} */}
+                  )}
                     </div>
                   </div>
                   <div className="form-group mb-3">
@@ -145,14 +145,14 @@ function ChangePassword({ password, onHide,props }) {
                         autocomplete="off"
                         name="department"
                         
-                        // value={newPassword}
-                        // onChange={(e) => setNewPassword(e.target.value)}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Enter new password"
                       />
                       <span className="validation-text"></span>
-                      {/* {errors.newPassword && (
+                      {errors.newPassword && (
                     <div className="text-danger fs-12">{errors.newPassword}</div>
-                  )} */}
+                  )}
                     </div>
                   </div>
                   <div className="form-group mb-3">
@@ -166,14 +166,14 @@ function ChangePassword({ password, onHide,props }) {
                         autocomplete="off"
                         name="department"
                         
-                        // value={confirmPassword}
-                        // onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Re-enter new password"
                       />
                       <span className="validation-text"></span>
-                      {/* {errors.confirmPassword && (
+                      {errors.confirmPassword && (
                     <div className="text-danger fs-12">{errors.confirmPassword}</div>
-                  )} */}
+                  )}
                     </div>
                   </div>
                 </div>

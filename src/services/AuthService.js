@@ -1,91 +1,115 @@
-import axios from 'axios';
+import axios from "axios";
 import swal from "sweetalert";
-import {
-    loginConfirmedAction,
-    logout,
-} from '../store/actions/AuthActions';
+import { loginConfirmedAction, logout } from "../store/actions/AuthActions";
+import { CHANGE_PASSWORD, DASHBOARD, LOGIN, LOGOUT } from "./AuthApiEndPoints";
+import instance from "./Instance";
 
 export function signUp(email, password) {
-    //axios call
+  //axios call
 
-    const postData = {
-        email,
-        password,
-        returnSecureToken: true,
-    };
+  const postData = {
+    email,
+    password,
+    returnSecureToken: true,
+  };
 
-    return axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD3RPAp3nuETDn9OQimqn_YF6zdzqWITII`,
-        postData,
-    );
+  return axios.post(
+    `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD3RPAp3nuETDn9OQimqn_YF6zdzqWITII`,
+    postData
+  );
 }
 
 export function login(email, password) {
-    const postData = {
-        email,
-        password,
-        returnSecureToken: true,
-    };
+  const postData = {
+    email,
+    password,
+  };
 
-    return axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD3RPAp3nuETDn9OQimqn_YF6zdzqWITII`,
-        postData,
-    );
+  return instance.post(LOGIN, postData);
 }
 
-export function formatError(errorResponse) {
-    switch (errorResponse.error.message) {
-        case 'EMAIL_EXISTS':
-            //return 'Email already exists';
-            swal("Oops", "Email already exists", "error");
-            break;
-        case 'EMAIL_NOT_FOUND':
-            //return 'Email not found';
-           swal("Oops", "Email not found", "error",{ button: "Try Again!",});
-           break;
-        case 'INVALID_PASSWORD':
-            //return 'Invalid Password';
-            swal("Oops", "Invalid Password", "error",{ button: "Try Again!",});
-            break;
-        case 'USER_DISABLED':
-            return 'User Disabled';
+export function dashboard() {
+  const data = localStorage.getItem("tokenDetails");
+  const myHeaders = {
+    Authorization: `Bearer ${data}`,
+  };
+  return instance.get(DASHBOARD, {
+    headers: myHeaders,
+  });
+}
+export function changePasswoard(oldPassword, newPassword) {
+    const postData = {
+        oldPassword, newPassword
+    };
+    const data = localStorage.getItem("tokenDetails");
+    const myHeaders = {
+      Authorization: `Bearer ${data}`,
+    };
+    return instance.put(CHANGE_PASSWORD, postData,{headers:myHeaders});
+  }
+export function logOut() {
+    const data = localStorage.getItem("tokenDetails");
+  const myHeaders = {
+    Authorization: `Bearer ${data}`,
+  };
+  
+    return instance.post( LOGOUT,
+        { test: "" },
+        {
+          headers: myHeaders,
+        });
+  }
 
-        default:
-            return '';
-    }
+export function formatError(errorResponse) {
+  switch (errorResponse.error.message) {
+    case "EMAIL_EXISTS":
+      //return 'Email already exists';
+      swal("Oops", "Email already exists", "error");
+      break;
+    case "EMAIL_NOT_FOUND":
+      //return 'Email not found';
+      swal("Oops", "Email not found", "error", { button: "Try Again!" });
+      break;
+    case "INVALID_PASSWORD":
+      //return 'Invalid Password';
+      swal("Oops", "Invalid Password", "error", { button: "Try Again!" });
+      break;
+    case "USER_DISABLED":
+      return "User Disabled";
+
+    default:
+      return "";
+  }
 }
 
 export function saveTokenInLocalStorage(tokenDetails) {
-    tokenDetails.expireDate = new Date(
-        new Date().getTime() + tokenDetails.expiresIn * 1000,
-    );
-    localStorage.setItem('userDetails', JSON.stringify(tokenDetails));
+  //   tokenDetails.expireDate = new Date(
+  //     new Date().getTime() + tokenDetails.expiresIn * 1000
+  //   );
+  localStorage.setItem("tokenDetails", tokenDetails);
 }
 
 export function runLogoutTimer(dispatch, timer, history) {
-    setTimeout(() => {
-        dispatch(logout(history));
-    }, timer);
+  setTimeout(() => {
+    dispatch(logout(history));
+  }, timer);
 }
 
 export function checkAutoLogin(dispatch, history) {
-    const tokenDetailsString = localStorage.getItem('userDetails');
-    let tokenDetails = '';
-    if (!tokenDetailsString) {
-        dispatch(logout(history));
-        return;
-    }
-
-    tokenDetails = JSON.parse(tokenDetailsString);
-    let expireDate = new Date(tokenDetails.expireDate);
-    let todaysDate = new Date();
-
-    if (todaysDate > expireDate) {
-        dispatch(logout(history));
-        return;
-    }
-    dispatch(loginConfirmedAction(tokenDetails));
-
-    const timer = expireDate.getTime() - todaysDate.getTime();
-    runLogoutTimer(dispatch, timer, history);
+  //   const tokenDetailsString = localStorage.getItem("userDetails");
+  //   let tokenDetails = "";
+  //   if (!tokenDetailsString) {
+  //     dispatch(logout(history));
+  //     return;
+  //   }
+  //   tokenDetails = JSON.parse(tokenDetailsString);
+  //   let expireDate = new Date(tokenDetails.expireDate);
+  //   let todaysDate = new Date();
+  //   if (todaysDate > expireDate) {
+  //     dispatch(logout(history));
+  //     return;
+  //   }
+  //   dispatch(loginConfirmedAction(tokenDetails));
+  //   const timer = expireDate.getTime() - todaysDate.getTime();
+  //   runLogoutTimer(dispatch, timer, history);
 }

@@ -7,7 +7,13 @@ import swal from "sweetalert";
 // import Spinner from "../reusable/Spinner";
 // import ReactPaginate from "react-paginate";
 import { toast, ToastContainer } from "react-toastify";
-export default function UserManagement() {
+import {
+  blockUser,
+  deleteUser,
+  getAllUsers,
+} from "../../services/User/UserService";
+import Spinner from "../common/Spinner";
+export default function UserManagement(props) {
   const [loader, setLoader] = useState(false);
   const [users, setUsers] = useState([]);
   const [apiError, setApiError] = useState("");
@@ -50,6 +56,70 @@ export default function UserManagement() {
       progress: undefined,
     });
   };
+
+  function getTableData() {
+    setLoader(true);
+    getAllUsers(currentPage, limit, search)
+      .then((response) => {
+        setUsers(response.data.data.Users);
+        const total = response.data.data.countUser;
+        setLoader(false);
+        setPageCount(Math.ceil(total / limit));
+        console.log(response.data.data.users, " table data ");
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("tokenDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+
+  function onDelete(userId) {
+    setLoader(true);
+    deleteUser(userId)
+      .then((response) => {
+        getTableData();
+        notifyTopRight(response.data.data);
+
+        console.log(response);
+        setLoader(false);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError(error.response.data.data);
+        if (error.response.data.statusCode === 404) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  function onAction(userId) {
+    setLoader(true);
+    blockUser(userId)
+      .then((response) => {
+        notifyTopRight(response.data.data);
+        getTableData();
+        setLoader(false);
+
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError(error.response.data.data);
+        if (error.response.data.statusCode === 404) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  useEffect(() => {
+    getTableData();
+  }, [currentPage]);
+
   return (
     <div>
       <ToastContainer
@@ -106,32 +176,7 @@ export default function UserManagement() {
                     </div>
                   </div>
                 </div>
-                <div
-                  className="pl-1 col-6 d-flex justify-content-center align-items-center"
-                  style={{ gap: "0.5rem" }}
-                >
-                  <div className="form-group">
-                    <input
-                      className="form-control orders-filter-border"
-                      type="date"
-                      placeholder="Start date:"
-                    //   value={startDate}
-                    //   onChange={(e) => (
-                    //     "this.className=(this.value!=''?'has-value':'')",
-                    //     setStartDate(e.target.value)
-                    //   )}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <input
-                      className="form-control orders-filter-border"
-                      type="date"
-                    //   placeholder="End date:"
-                    //   value={endDate}
-                    //   onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </div>
-                </div>
+           
               </div>
             
           </Card.Header> */}
@@ -139,10 +184,10 @@ export default function UserManagement() {
             <Table>
               <thead style={{ color: "black" }}>
                 <tr>
-                <th >
+                  <th>
                     <strong>IMAGE</strong>
                   </th>
-                  <th >
+                  <th>
                     <strong>NAME</strong>
                   </th>
                   <th>
@@ -166,38 +211,30 @@ export default function UserManagement() {
                 </tr>
               </thead>
               <tbody>
-                {/* {users.map((item) => (
+                {users.map((item) => (
                   <tr>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
-                    >
-                      {item.name}
+                    <td>
+                      <img src={item.profile} width={70} height={70} />
                     </td>
                     <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
+                    // onClick={() => (
+                    //   props.history.push("/users-order-listing"),
+                    //   saveUserIdInLocalStorage(item._id)
+                    // )}
                     >
-                      {item.email}
+                      {item.fName}
                     </td>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
+                    <td>{item.email}</td>
+                    <td>{item.phone}</td>
+                    <td>{item.typeOfTrainer}</td>
+                    <td>
+                      {item.isApproved ? (
+                        <Badge variant=" success light">Approved</Badge>
+                      ) : (
+                        <Badge variant="danger light">Pending</Badge>
                       )}
-                    >
-                      {item.phoneNumber}
                     </td>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
-                    >
+                    <td>
                       {item.isBlocked ? (
                         <Badge variant="danger light">Deactive</Badge>
                       ) : (
@@ -213,20 +250,15 @@ export default function UserManagement() {
                           {svg1}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item>
-                            <Link
-                              to="users-order-listing"
-                              onClick={() => saveUserIdInLocalStorage(item._id)}
-                            >
-                              View Orders
-                            </Link>
-                          </Dropdown.Item>
+                          <Dropdown.Item>Approve Profile</Dropdown.Item>
+                          <Dropdown.Item>Download</Dropdown.Item>
+
                           {item.isBlocked ? (
-                            <Dropdown.Item onClick={() => onDisable(item._id)}>
+                            <Dropdown.Item onClick={() => onAction(item._id)}>
                               Enable
                             </Dropdown.Item>
                           ) : (
-                            <Dropdown.Item onClick={() => onDisable(item._id)}>
+                            <Dropdown.Item onClick={() => onAction(item._id)}>
                               Disable
                             </Dropdown.Item>
                           )}
@@ -238,36 +270,7 @@ export default function UserManagement() {
                       </Dropdown>
                     </td>
                   </tr>
-                ))} */}
-                <tr>
-                <td><img src="#" alt="image"/></td>
-                  <td>Ram</td>
-                  <td>hello@email.com</td>
-                  <td>1234567890</td>
-                  <td>Anything</td>
-                  <td>
-                    <Badge variant="danger light">Pending</Badge>
-                  </td>
-                  <td>
-                    <Badge variant="success light">Active</Badge>
-                  </td>
-                  <td>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="info light"
-                        className="light sharp btn btn-info i-false"
-                      >
-                        {svg1}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>Approve Profile</Dropdown.Item>
-                        <Dropdown.Item>Download</Dropdown.Item>
-                        <Dropdown.Item>Deactive</Dropdown.Item>
-                        <Dropdown.Item>Delete</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </td>
-                </tr>
+                ))}
               </tbody>
             </Table>
             {/* {users?.length === 0 && !loader ? (
@@ -303,7 +306,7 @@ export default function UserManagement() {
           </Card.Body>
         </Card>
       </Col>
-      {/* {loader && <Spinner />} */}
+      {loader && <Spinner />}
     </div>
   );
 }

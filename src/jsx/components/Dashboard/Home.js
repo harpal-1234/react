@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Dropdown, Tab, Nav, Col, Card } from "react-bootstrap";
 import CountUp from "react-countup";
@@ -12,6 +12,7 @@ import ActiveChart1 from "../davur/home/ActivityChart1";
 import ActiveChart2 from "../davur/home/ActivityChart2";
 import ActiveChart3 from "../davur/home/ActivityChart3";
 import LineChart1 from "../charts/Chartjs/line1";
+import { dashboard } from "../../../services/AuthService";
 // import avatar3 from "../../../images/avatar/3.jpg";
 // import avatar4 from "../../../images/avatar/4.jpg";
 // import svg from "../../../images/svg/welcom-card.svg";
@@ -23,7 +24,7 @@ import LineChart1 from "../charts/Chartjs/line1";
 //    pMinDelay(import("../charts/apexcharts/Pie3"), 1000)
 // );
 
-const Home = () => {
+const Home = (props) => {
   const data = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
@@ -90,6 +91,27 @@ const Home = () => {
       display: false,
     },
   };
+  const [users, setUsers] = useState("");
+  function getDashboardData() {
+    // setLoader(true);
+    dashboard()
+      .then((response) => {
+        setUsers(response.data.data.user);
+        console.log(response.data.data.user, " table data ");
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("tokenDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+
+  useEffect(() => {
+    getDashboardData();
+  }, []);
+  
   return (
     <>
       <div className="form-head d-flex mb-3 align-items-start">
@@ -164,7 +186,7 @@ const Home = () => {
                   <h3 className="mb-0 text-black">
                     <span className="counter ml-0">
                       {" "}
-                      <CountUp start={0} end={65} duration={5} />
+                      <CountUp start={0} end={users} duration={5} />
                     </span>
                   </h3>
                   <p className="mb-0">Total Users</p>
