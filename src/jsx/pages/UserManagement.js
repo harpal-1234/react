@@ -8,6 +8,7 @@ import swal from "sweetalert";
 // import ReactPaginate from "react-paginate";
 import { toast, ToastContainer } from "react-toastify";
 import {
+  approveUser,
   blockUser,
   deleteUser,
   getAllUsers,
@@ -20,9 +21,8 @@ export default function UserManagement(props) {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  console.log(startDate, endDate, "date");
+  
+
   const limit = 10;
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
@@ -68,39 +68,39 @@ export default function UserManagement(props) {
         console.log(response.data.data.users, " table data ");
       })
       .catch((error) => {
+        console.log(error, "helooooooooo");
+        setLoader(false);
+        // if (error.response.data.statusCode === 401) {
+        //   localStorage.clear("tokenDetails");
+        //   props.history.push("/login");
+        // }
+      });
+  }
+
+  function onDelete(id) {
+    setLoader(true);
+    deleteUser(id)
+      .then((response) => {
+        getTableData();
+        notifyTopRight(response.data.message);
+        console.log(response);
+        setLoader(false);
+      })
+      .catch((error) => {
         console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError(error.response.data.data);
         if (error.response.data.statusCode === 401) {
-          localStorage.clear("tokenDetails");
-          props.history.push("/login");
-        }
-      });
-  }
-
-  function onDelete(userId) {
-    setLoader(true);
-    deleteUser(userId)
-      .then((response) => {
-        getTableData();
-        notifyTopRight(response.data.data);
-
-        console.log(response);
-        setLoader(false);
-      })
-      .catch((error) => {
-        console.log(error.response, "helooooooooo");
-        setLoader(false);
-        notifyError(error.response.data.data);
-        if (error.response.data.statusCode === 404) {
           localStorage.clear("authDetails");
           props.history.push("/login");
         }
       });
   }
-  function onAction(userId) {
+  function onAction(id) {
     setLoader(true);
-    blockUser(userId)
+    blockUser(id)
       .then((response) => {
-        notifyTopRight(response.data.data);
+        notifyTopRight(response.data.data.updateUser);
         getTableData();
         setLoader(false);
 
@@ -110,12 +110,33 @@ export default function UserManagement(props) {
         console.log(error.response, "helooooooooo");
         setLoader(false);
         notifyError(error.response.data.data);
-        if (error.response.data.statusCode === 404) {
+        if (error.response.data.statusCode === 401) {
           localStorage.clear("authDetails");
           props.history.push("/login");
         }
       });
   }
+  function onApprove(id) {
+    setLoader(true);
+    approveUser(id)
+      .then((response) => {
+        notifyTopRight("Approved successfully.");
+        getTableData();
+        setLoader(false);
+
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError("Something went wrong!");
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  
   useEffect(() => {
     getTableData();
   }, [currentPage]);
@@ -136,9 +157,9 @@ export default function UserManagement(props) {
       <PageTitle activeMenu="Users List" motherMenu="Users" />
       <Col>
         <Card>
-          {/* <Card.Header className="">
-              <div className="row d-flex justify-content-between ">
-                <div className="col-4" style={{ flexGrow: 1 }}>
+          <Card.Header className="d-block">
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="col-8" style={{ flexGrow: 1 }}>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <div
                       className="input-group border bg-white input-group-sm"
@@ -179,7 +200,7 @@ export default function UserManagement(props) {
            
               </div>
             
-          </Card.Header> */}
+          </Card.Header>
           <Card.Body>
             <Table>
               <thead style={{ color: "black" }}>
@@ -229,7 +250,7 @@ export default function UserManagement(props) {
                     <td>{item.typeOfTrainer}</td>
                     <td>
                       {item.isApproved ? (
-                        <Badge variant=" success light">Approved</Badge>
+                        <Badge variant="success light">Approved</Badge>
                       ) : (
                         <Badge variant="danger light">Pending</Badge>
                       )}
@@ -250,7 +271,10 @@ export default function UserManagement(props) {
                           {svg1}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item>Approve Profile</Dropdown.Item>
+                          {
+                            !item.isApproved && <Dropdown.Item onClick={()=>onApprove(item._id)}>Approve Profile</Dropdown.Item>
+                          }
+                         
                           <Dropdown.Item>Download</Dropdown.Item>
 
                           {item.isBlocked ? (

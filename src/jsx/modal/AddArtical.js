@@ -4,77 +4,105 @@ import swal from "sweetalert";
 import { nanoid } from "nanoid";
 import user from "../../images/task/user.jpg";
 import { Editor } from "@tinymce/tinymce-react";
-export default function AddArtical({ show, onHide }) {
-  const [postModal, setPostModal] = useState(false);
-  const [contacts, setContacts] = useState();
-  const [selected, setSelected] = useState("Standard");
-  // delete data
-  const handleDeleteClick = (contactId) => {
-    const newContacts = [...contacts];
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-    newContacts.splice(index, 1);
-    setContacts(newContacts);
+import { toast } from "react-toastify";
+import { uploadFile } from "react-s3";
+import { postArticle } from "../../services/ArticleService/ArticleService";
+export default function AddArtical({ show, onHide,table }) {
+  const config = {
+    bucketName: "pushyy-app",
+    region: "us-west-2",
+    accessKeyId: "AKIA2OS2KQJKGLET7ZE5",
+    secretAccessKey: "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",
   };
+  let responseImage = {};
+  const [loader, setLoader] = useState(false);
+  const [image, setImage] = useState("");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [apiError, setApiError] = useState("");
 
-  //Add data
-  const [addFormData, setAddFormData] = useState({
-    Cust_Id: "",
-    Date_Join: "",
-    Cust_Name: "",
-    Location: "",
+  let errorsObj = {
     image: "",
-  });
+    title: "",
+    description: "",
+  };
+  const [errors, setErrors] = useState(errorsObj);
 
-  // Add contact function
-  const handleAddFormChange = (event) => {
-    event.preventDefault();
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
-    const newFormData = { ...addFormData };
-    newFormData[fieldName] = fieldValue;
-    setAddFormData(newFormData);
+  const notifyTopRight = () => {
+    toast.success(`✅ Created Successfully.`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   };
-  //Add Submit data
-  const handleAddFormSubmit = (event) => {
-    event.preventDefault();
-    var error = false;
-    var errorMsg = "";
-    if (addFormData.Date_Join === "") {
+  const notifyError = (error) => {
+    toast.error(`❌${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+  const handleChangeClinical = (content) => {
+    setDescription(content);
+  };
+  async function onSubmit(e) {
+    setLoader(true);
+    e.preventDefault();
+
+    let error = false;
+    const errorObj = { ...errorsObj };
+    if (image === "") {
+      errorObj.image = "Image is Required !";
       error = true;
-      errorMsg = "Please fill date";
-    } else if (addFormData.Cust_Name === "") {
-      error = true;
-      errorMsg = "Please fill name.";
-    } else if (addFormData.Location === "") {
-      error = true;
-      errorMsg = "Please fill location";
     }
-    if (!error) {
-      const newContact = {
-        id: nanoid(),
-        Cust_Id: addFormData.Cust_Id,
-        Date_Join: addFormData.Date_Join,
-        Cust_Name: addFormData.Cust_Name,
-        Location: addFormData.Location,
-        image: addFormData.image,
-      };
-      const newContacts = [...contacts, newContact];
-      setContacts(newContacts);
-      setPostModal(false);
-      swal("Good job!", "Successfully Added", "success");
-      addFormData.Cust_Name = addFormData.Location = addFormData.Date_Join = "";
-    } else {
-      swal("Oops", errorMsg, "error");
+    if (title === "") {
+      errorObj.title = "Title is Required !";
+      error = true;
     }
-  };
-  const [file, setFile] = useState(null);
-  const fileHandler = (e) => {
-    setFile(e.target.files[0]);
-    setTimeout(function () {
-      var src = document.getElementById("saveImageFile").getAttribute("src");
-      addFormData.image = src;
-    }, 200);
-  };
+
+    if (description === "") {
+      errorObj.description = "This Field is Required !";
+      error = true;
+    }
+
+    setErrors(errorObj);
+    if (error) {
+      return;
+    }
+    const file = new File([image], new Date().getTime());
+    console.log(file, "after file creation");
+    if (file.size > 0) {
+      responseImage = await uploadFile(file, config);
+      console.log(responseImage, "after upload");
+    }
+   
+    postArticle(responseImage.location, title,category, description)
+      .then((response) => {
+        console.log(response, "vgvfdfhjvhfvhg");
+        setLoader(false);
+        notifyTopRight("");
+        setImage("");
+        setTitle("");
+        setCategory("")
+        setDescription("");
+        onHide();
+        table();
+      })
+      .catch((error) => {
+        setLoader(false);
+        // notifyError(error.response.data.message);
+        console.log(error.response, "error");
+        setApiError(error.response.data.data);
+      });
+  }
   return (
     <Modal className="modal fade" show={show}>
       <div className="">
@@ -94,26 +122,19 @@ export default function AddArtical({ show, onHide }) {
               <i className="flaticon-cancel-12 close"></i>
               <div className="add-contact-box">
                 <div className="add-contact-content">
-                  <div className="image-placeholder">
-                    <div className="avatar-edit">
-                      <input
-                        type="file"
-                        onChange={fileHandler}
-                        id="imageUpload"
-                        onClick={(event) => setFile(event.target.value)}
-                      />
-                      <label htmlFor="imageUpload" name=""></label>
-                    </div>
-                    <div className="avatar-preview">
-                      <div id="imagePreview">
-                        <img
-                          style={{ objectFit: "contain" }}
-                          id="saveImageFile"
-                          src={file ? URL.createObjectURL(file) : user}
-                          alt={file ? file.name : null}
-                        />
-                      </div>
-                    </div>
+                <div className="contact-name">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-control"
+                      autocomplete="off"
+                      onChange={(e) => setImage(e.target.files[0])}
+                      multiple
+                      style={{ paddingTop: "14px" }}
+                    />
+                    {errors.image && (
+                      <div className="text-danger fs-12">{errors.image}</div>
+                    )}
                   </div>
                   <div className="form-group mb-3">
                     <label className="text-black font-w500">Title</label>
@@ -124,7 +145,8 @@ export default function AddArtical({ show, onHide }) {
                         autocomplete="off"
                         name="Cust_Id"
                         required="required"
-                        onChange={handleAddFormChange}
+                        value={title}
+                      onChange={(e) => setTitle(e.target.value)}
                         placeholder="title"
                       />
                       <span className="validation-text"></span>
@@ -139,7 +161,8 @@ export default function AddArtical({ show, onHide }) {
                         autocomplete="off"
                         name="Date_Join"
                         required="required"
-                        onChange={handleAddFormChange}
+                        value={category}
+                      onChange={(e) => setCategory(e.target.value)}
                         placeholder="category"
                       />
                       <span className="validation-text"></span>
@@ -164,7 +187,7 @@ export default function AddArtical({ show, onHide }) {
                           "bullist numlist outdent indent | textcolor | textarea | forecolor backcolor",
                         content_style: "body { color: #000 }",
                       }}
-                      // onEditorChange={handleChangeClinical}
+                      onEditorChange={handleChangeClinical}
                       name="prescription"
                     />
                   </div>
@@ -175,7 +198,7 @@ export default function AddArtical({ show, onHide }) {
               <button
                 type="submit"
                 className="btn btn-info"
-                onClick={handleAddFormSubmit}
+                onClick={onSubmit}
               >
                 Add
               </button>

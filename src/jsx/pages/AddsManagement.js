@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge, Button, Card, Col, Dropdown, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { actionAdvertise, deleteAdvertise, getAdvertise } from "../../services/Advertise/AdvertiseService";
+import Pagination from "../common/Pagination";
+import Spinner from "../common/Spinner";
 import PageTitle from "../layouts/PageTitle";
 import AddArtical from "../modal/AddArtical";
 import Advertisement from "../modal/Advertisement";
 
-export default function AddsManagement() {
+export default function AddsManagement(props) {
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -17,7 +20,100 @@ export default function AddsManagement() {
       </g>
     </svg>
   );
+
+  const notifyTopRight = (success) => {
+    toast.success(`✅ ${success}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+  const notifyError = (error) => {
+    toast.error(`❌${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
   const [postModal, setPostModal] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const [data, setData] = useState([]);
+  const [apiError, setApiError] = useState("");
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState("");
+
+  const limit = 5;
+  function getTableData() {
+    setLoader(true);
+    getAdvertise(currentPage, limit)
+      .then((response) => {
+        setData(response.data.data.Advertisements);
+        const total = response.data.data.countAdvertisements;
+        setLoader(false);
+        setPageCount(Math.ceil(total / limit));
+        console.log(response.data, " table data ");
+      })
+      .catch((error) => {
+        console.log(error, "helooooooooo");
+        setLoader(false);
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("tokenDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  function onDelete(id) {
+    setLoader(true);
+    deleteAdvertise(id)
+      .then((response) => {
+        getTableData();
+        notifyTopRight(response.data.message);
+
+        console.log(response);
+        setLoader(false);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError(error.response.data.data);
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  function onAction(id) {
+    setLoader(true);
+    actionAdvertise(id)
+      .then((response) => {
+        notifyTopRight(response.data.data.updateAds);
+        getTableData();
+        setLoader(false);
+
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError(error.response.data.data);
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  useEffect(() => {
+    getTableData();
+    console.log(currentPage, " new 111");
+  }, [currentPage]);
   return (
     <div>
       <ToastContainer
@@ -39,75 +135,48 @@ export default function AddsManagement() {
       </div>
       <Col>
         <Card>
-          {/* <Card.Header className="">
-              <div className="row d-flex justify-content-between ">
-                <div className="col-4" style={{ flexGrow: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <div
-                      className="input-group border bg-white input-group-sm"
-                      style={{ borderRadius: "8px" }}
-                    >
-                      <input
-                        style={{
-                          paddingBottom: "25px",
-                          paddingTop: "25px",
-                          borderRadius: "10px",
-                          fontSize: "14px",
-                        }}
-                        type="text"
-                        name="table_search"
-                        className="form-control float-right border-0"
-                        placeholder="Search"
-                        // onKeyDown={(e) => {
-                        //   console.log(e.key);
-                        //   if (e.key === "Enter") {
-                        //     handleFetch();
-                        //     // setCurrentPage(0);
-                        //   }
-                        // }}
-                        // onChange={(e) => setSearch(e.target.value.trimEnd())}
-                      />
-                      <div className="input-group-append">
-                        <button
-                          type="button"
-                          className="btn btn-default"
+          <Card.Header className="d-block">
+            <div className="d-flex justify-content-between ">
+              <div className="col-4" style={{ flexGrow: 1 }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    className="input-group border bg-white input-group-sm"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <input
+                      style={{
+                        paddingBottom: "25px",
+                        paddingTop: "25px",
+                        borderRadius: "10px",
+                        fontSize: "14px",
+                      }}
+                      type="text"
+                      name="table_search"
+                      className="form-control float-right border-0"
+                      placeholder="Search"
+                      // onKeyDown={(e) => {
+                      //   console.log(e.key);
+                      //   if (e.key === "Enter") {
+                      //     handleFetch();
+                      //     // setCurrentPage(0);
+                      //   }
+                      // }}
+                      // onChange={(e) => setSearch(e.target.value.trimEnd())}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-default"
                         //   onClick={handleFetch}
-                        >
-                          <i className="fa fa-search" />
-                        </button>
-                      </div>
+                      >
+                        <i className="fa fa-search" />
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div
-                  className="pl-1 col-6 d-flex justify-content-center align-items-center"
-                  style={{ gap: "0.5rem" }}
-                >
-                  <div className="form-group">
-                    <input
-                      className="form-control orders-filter-border"
-                      type="date"
-                      placeholder="Start date:"
-                    //   value={startDate}
-                    //   onChange={(e) => (
-                    //     "this.className=(this.value!=''?'has-value':'')",
-                    //     setStartDate(e.target.value)
-                    //   )}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <input
-                      className="form-control orders-filter-border"
-                      type="date"
-                    //   placeholder="End date:"
-                    //   value={endDate}
-                    //   onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </div>
-                </div>
               </div>
-            
-          </Card.Header> */}
+            </div>
+          </Card.Header>
           <Card.Body>
             <Table>
               <thead style={{ color: "black" }}>
@@ -116,16 +185,13 @@ export default function AddsManagement() {
                     <strong>IMAGE</strong>
                   </th>
                   <th>
-                    <strong>NAME</strong>
-                  </th>
-                  <th>
-                    <strong>EMAIL</strong>
-                  </th>
-                  <th>
-                    <strong>PHONE NUMBER</strong>
+                    <strong>TITLE</strong>
                   </th>
                   <th>
                     <strong>CATEGORY</strong>
+                  </th>
+                  <th>
+                    <strong>DESCRIPTION</strong>
                   </th>
                   <th>
                     <strong>STATUS</strong>
@@ -136,39 +202,14 @@ export default function AddsManagement() {
                 </tr>
               </thead>
               <tbody>
-                {/* {users.map((item) => (
+                {data.map((item) => (
                   <tr>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
-                    >
-                      {item.name}
-                    </td>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
-                    >
-                      {item.email}
-                    </td>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
-                    >
-                      {item.phoneNumber}
-                    </td>
-                    <td
-                      onClick={() => (
-                        props.history.push("/users-order-listing"),
-                        saveUserIdInLocalStorage(item._id)
-                      )}
-                    >
-                      {item.isBlocked ? (
+                    <td><img src={item.image} width={70} height={70}/></td>
+                    <td>{item.title}</td>
+                    <td>{item.category}category</td>
+                    <td>{item.description}</td>
+                    <td>
+                      {item.isDisable ? (
                         <Badge variant="danger light">Deactive</Badge>
                       ) : (
                         <Badge variant="success light">Active</Badge>
@@ -183,96 +224,46 @@ export default function AddsManagement() {
                           {svg1}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item>
-                            <Link
-                              to="users-order-listing"
-                              onClick={() => saveUserIdInLocalStorage(item._id)}
-                            >
-                              View Orders
-                            </Link>
-                          </Dropdown.Item>
-                          {item.isBlocked ? (
-                            <Dropdown.Item onClick={() => onDisable(item._id)}>
+                          <Dropdown.Item></Dropdown.Item>
+                          {item.isDisable ? (
+                            <Dropdown.Item
+                             onClick={() => onAction(item._id)}
+                             >
                               Enable
                             </Dropdown.Item>
                           ) : (
-                            <Dropdown.Item onClick={() => onDisable(item._id)}>
+                            <Dropdown.Item 
+                            onClick={() => onAction(item._id)}
+                            >
                               Disable
                             </Dropdown.Item>
                           )}
 
-                          <Dropdown.Item onClick={() => onDelete(item._id)}>
+                          <Dropdown.Item 
+                          onClick={() => onDelete(item._id)}
+                          >
                             Delete
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>
                     </td>
                   </tr>
-                ))} */}
-                <tr>
-                  <td>
-                    <img src="#" />
-                  </td>
-                  <td>Ram</td>
-                  <td>hello@email.com</td>
-                  <td>1234567890</td>
-                  <td>Anything</td>
-
-                  <td>
-                    <Badge variant="success light">Active</Badge>
-                  </td>
-                  <td>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="info light"
-                        className="light sharp btn btn-info i-false"
-                      >
-                        {svg1}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>Disable</Dropdown.Item>
-                        <Dropdown.Item>Delete</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </td>
-                </tr>
+                ))}
               </tbody>
             </Table>
-            {/* {users?.length === 0 && !loader ? (
+            {data?.length === 0 && !loader ? (
               <div className="justify-content-center d-flex my-5 ">
                 Sorry, Data Not Found!
               </div>
             ) : (
               ""
             )}
-            {pageCount > 1 && (
-              <ReactPaginate
-                pageCount={pageCount}
-                forcePage={currentPage}
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"....."}
-                marginPagesDisplayed={2}
-                containerClassName={"pagination "}
-                pageClassName={"page-item"}
-                pageLinkClassName={"page-link"}
-                previousClassName={"page-item"}
-                previousLinkClassName={"page-link"}
-                nextClassName={"page-item"}
-                nextLinkClassName={"page-link"}
-                breakClassName={"page-item"}
-                breakLinkClassName={"page-link"}
-                activeClassName={"page-item active"}
-                onPageChange={(selected) => {
-                  setCurrentPage(selected.selected);
-                }}
-              />
-            )} */}
+            <Pagination pageCount={pageCount} pageValue={currentPage} setPage={setCurrentPage}/>
           </Card.Body>
         </Card>
       </Col>
       <Advertisement show={postModal} onHide={() => setPostModal(false)} />
-      {/* {loader && <Spinner />} */}
+      {loader && <Spinner />}
     </div>
   );
 }

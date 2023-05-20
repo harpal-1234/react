@@ -8,4 +8,4 @@ export const BLOCK_USERS = 'admin/auth/userBlock';
 
 export const GET_USER_DETAILS = 'admin/user/detail';
 
-export const VERIFY_USER_DETAILS = 'admin/user/verify';
+export const APPROVE_USER_DETAILS = 'admin/auth/userApproved';

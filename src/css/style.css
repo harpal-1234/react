@@ -25507,7 +25507,9 @@ code {
   border-radius: 0px;
   font-weight: 500;
   border-bottom: 3px solid transparent;
-  border-width: 0 0px 3px 0; }
+  border-width: 0 0px 3px 0; 
+  color: #696969;
+}
   .custom-tab-1 .nav-link i {
     display: inline-block;
     transform: scale(1.5);
