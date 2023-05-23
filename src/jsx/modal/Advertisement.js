@@ -1,82 +1,113 @@
 import React, { useState } from "react";
 import { Dropdown, Modal } from "react-bootstrap";
-import swal from "sweetalert";
-import { nanoid } from "nanoid";
-import user from "../../images/task/user.jpg";
-import { Editor } from "@tinymce/tinymce-react";
-export default function Advertisement({ show, onHide }) {
-  const [postModal, setPostModal] = useState(false);
-  const [contacts, setContacts] = useState();
-  const [selected, setSelected] = useState("Standard");
-  // delete data
-  const handleDeleteClick = (contactId) => {
-    const newContacts = [...contacts];
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-    newContacts.splice(index, 1);
-    setContacts(newContacts);
+import { uploadFile } from "react-s3";
+import { toast } from "react-toastify";
+import { postAdvertise } from "../../services/Advertise/AdvertiseService";
+window.Buffer = window.Buffer || require("buffer").Buffer;
+export default function Advertisement({ show,table, onHide }) {
+ 
+  
+ 
+  const config = {
+    bucketName: "traintab",
+    region: "us-west-2",
+    accessKeyId: "AKIAWTWYHC4USCNNQDXK",
+    secretAccessKey: "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",
   };
+  let responseImage = {};
+  const [loader, setLoader] = useState(false);
+  const [image, setImage] = useState("");
+  const [couponTitle, setCouponTitle] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [offer, setOffer] = useState("");
+  const [apiError, setApiError] = useState("");
 
-  //Add data
-  const [addFormData, setAddFormData] = useState({
-    Cust_Id: "",
-    Date_Join: "",
-    Cust_Name: "",
-    Location: "",
+  let errorsObj = {
     image: "",
-  });
+    couponTitle: "",
+    couponCode: "",
+    offer: "",
+  };
+  const [errors, setErrors] = useState(errorsObj);
 
-  // Add contact function
-  const handleAddFormChange = (event) => {
-    event.preventDefault();
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
-    const newFormData = { ...addFormData };
-    newFormData[fieldName] = fieldValue;
-    setAddFormData(newFormData);
+  const notifyTopRight = () => {
+    toast.success(`✅ Created Successfully.`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   };
-  //Add Submit data
-  const handleAddFormSubmit = (event) => {
-    event.preventDefault();
-    var error = false;
-    var errorMsg = "";
-    if (addFormData.Date_Join === "") {
+  const notifyError = (error) => {
+    toast.error(`❌${error}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+ 
+  async function onSubmit(e) {
+    setLoader(true);
+    e.preventDefault();
+
+    let error = false;
+    const errorObj = { ...errorsObj };
+    if (image === "") {
+      errorObj.image = "Image is Required !";
       error = true;
-      errorMsg = "Please fill date";
-    } else if (addFormData.Cust_Name === "") {
-      error = true;
-      errorMsg = "Please fill name.";
-    } else if (addFormData.Location === "") {
-      error = true;
-      errorMsg = "Please fill location";
     }
-    if (!error) {
-      const newContact = {
-        id: nanoid(),
-        Cust_Id: addFormData.Cust_Id,
-        Date_Join: addFormData.Date_Join,
-        Cust_Name: addFormData.Cust_Name,
-        Location: addFormData.Location,
-        image: addFormData.image,
-      };
-      const newContacts = [...contacts, newContact];
-      setContacts(newContacts);
-      setPostModal(false);
-      swal("Good job!", "Successfully Added", "success");
-      addFormData.Cust_Name = addFormData.Location = addFormData.Date_Join = "";
-    } else {
-      swal("Oops", errorMsg, "error");
+    if (couponTitle === "") {
+      errorObj.couponTitle = "Title is Required !";
+      error = true;
     }
-  };
-  const [file, setFile] = useState(null);
-  const fileHandler = (e) => {
-    setFile(e.target.files[0]);
-    setTimeout(function () {
-      var src = document.getElementById("saveImageFile").getAttribute("src");
-      addFormData.image = src;
-    }, 200);
-  };
+
+    if (couponCode === "") {
+      errorObj.couponCode = "This Field is Required !";
+      error = true;
+    }
+    if (offer === "") {
+      errorObj.offer = "This Field is Required !";
+      error = true;
+    }
+
+    setErrors(errorObj);
+    if (error) {
+      return;
+    }
+    const file = new File([image], new Date().getTime());
+    console.log(file, "after file creation");
+    if (file.size > 0) {
+      responseImage = await uploadFile(file, config);
+      console.log(responseImage, "after upload");
+    }
+    setLoader(true);
+    postAdvertise(responseImage.location, couponTitle,couponCode, offer)
+      .then((response) => {
+        console.log(response, "post response");
+        setLoader(false);
+        notifyTopRight("");
+        setImage("");
+        setCouponTitle("");
+        setCouponCode("")
+        setOffer("");
+        onHide();
+        table();
+      })
+      .catch((error) => {
+        setLoader(false);
+        // notifyError(error.response.data.message);
+        console.log(error.response, "error");
+        setApiError(error.response.data.data);
+      });
+  }
   return (
-    <Modal className="modal fade" show={show}>
+    <Modal className="modal fade" show={show} centered>
       <div className="">
         <div className="">
           <form>
@@ -94,25 +125,21 @@ export default function Advertisement({ show, onHide }) {
               <i className="flaticon-cancel-12 close"></i>
               <div className="add-contact-box">
                 <div className="add-contact-content">
-                  <div className="image-placeholder">
-                    <div className="avatar-edit">
+                <div className="form-group mb-3">
+                    <label className="text-black font-w500">Image</label>
+                    <div className="contact-name">
                       <input
                         type="file"
-                        onChange={fileHandler}
-                        id="imageUpload"
-                        onClick={(event) => setFile(event.target.value)}
+                        accept="image/*"
+                        className="form-control"
+                        autocomplete="off"
+                        onChange={(e) => setImage(e.target.files[0])}
+                        multiple
+                        style={{ paddingTop: "14px" }}
                       />
-                      <label htmlFor="imageUpload" name=""></label>
-                    </div>
-                    <div className="avatar-preview">
-                      <div id="imagePreview">
-                        <img
-                          style={{ objectFit: "contain" }}
-                          id="saveImageFile"
-                          src={file ? URL.createObjectURL(file) : user}
-                          alt={file ? file.name : null}
-                        />
-                      </div>
+                      {errors.image && (
+                        <div className="text-danger fs-12">{errors.image}</div>
+                      )}
                     </div>
                   </div>
                   <div className="form-group mb-3">
@@ -122,12 +149,14 @@ export default function Advertisement({ show, onHide }) {
                         type="text"
                         className="form-control"
                         autocomplete="off"
-                        name="Cust_Id"
+                        
                         required="required"
-                        onChange={handleAddFormChange}
+                        onChange={(e)=>setCouponTitle(e.target.value)}
                         placeholder="title"
                       />
-                      <span className="validation-text"></span>
+                       {errors.couponTitle && (
+                      <div className="text-danger fs-12">{errors.couponTitle}</div>
+                    )}
                     </div>
                   </div>
                   <div className="form-group mb-3">
@@ -137,12 +166,14 @@ export default function Advertisement({ show, onHide }) {
                         type="text"
                         className="form-control"
                         autocomplete="off"
-                        name="Date_Join"
+                     
                         required="required"
-                        onChange={handleAddFormChange}
+                        onChange={(e)=>setCouponCode(e.target.value)}
                         placeholder="code"
                       />
-                      <span className="validation-text"></span>
+                       {errors.couponCode && (
+                      <div className="text-danger fs-12">{errors.couponCode}</div>
+                    )}
                     </div>
                   </div>
                   <div className="form-group">
@@ -151,12 +182,14 @@ export default function Advertisement({ show, onHide }) {
                         type="text"
                         className="form-control"
                         autocomplete="off"
-                        name="Date_Join"
+                       
                         required="required"
-                        onChange={handleAddFormChange}
+                        onChange={(e)=>setOffer(e.target.value)}
                         placeholder="offer"
                       />
-                      <span className="validation-text"></span>
+                      {errors.offer && (
+                      <div className="text-danger fs-12">{errors.offer}</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -165,7 +198,7 @@ export default function Advertisement({ show, onHide }) {
               <button
                 type="submit"
                 className="btn btn-info"
-                onClick={handleAddFormSubmit}
+                onClick={onSubmit}
               >
                 Add
               </button>

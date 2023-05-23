@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Badge, Button, Card, Col, Dropdown, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { actionArticle, deleteArticle, getArticle } from "../../services/ArticleService/ArticleService";
+import {
+  actionArticle,
+  deleteArticle,
+  getArticle,
+} from "../../services/ArticleService/ArticleService";
 import Pagination from "../common/Pagination";
 import Spinner from "../common/Spinner";
 import PageTitle from "../layouts/PageTitle";
@@ -47,11 +51,11 @@ export default function Articals(props) {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
- 
-  const limit = 5;
+
+  const limit = 10;
   function getTableData() {
     setLoader(true);
-    getArticle(currentPage, limit)
+    getArticle(currentPage, limit, search)
       .then((response) => {
         setArticles(response.data.data.Articles);
         const total = response.data.data.countArticles;
@@ -110,8 +114,8 @@ export default function Articals(props) {
   }
   useEffect(() => {
     getTableData();
-    console.log(currentPage," new 111")
-  }, [currentPage]);
+    console.log(currentPage, " new 111");
+  }, [currentPage, search]);
   return (
     <div>
       <ToastContainer
@@ -126,11 +130,7 @@ export default function Articals(props) {
         pauseOnHover
       />
       <PageTitle activeMenu="Artical List" motherMenu="Artical" />
-      <div className="d-flex justify-content-end mb-3">
-        <Button className="btn btn-primary" onClick={() => setPostModal(true)}>
-          Add New +
-        </Button>
-      </div>
+
       <Col>
         <Card>
           <Card.Header className="d-block">
@@ -152,26 +152,27 @@ export default function Articals(props) {
                       name="table_search"
                       className="form-control float-right border-0"
                       placeholder="Search"
-                      // onKeyDown={(e) => {
-                      //   console.log(e.key);
-                      //   if (e.key === "Enter") {
-                      //     handleFetch();
-                      //     // setCurrentPage(0);
-                      //   }
-                      // }}
-                      // onChange={(e) => setSearch(e.target.value.trimEnd())}
+                      onChange={(e) => setSearch(e.target.value)}
                     />
                     <div className="input-group-append">
                       <button
                         type="button"
                         className="btn btn-default"
-                        //   onClick={handleFetch}
+                        onClick={getTableData}
                       >
                         <i className="fa fa-search" />
                       </button>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="d-flex justify-content-end mb-3">
+                <Button
+                  className="btn btn-primary"
+                  onClick={() => setPostModal(true)}
+                >
+                  Add New +
+                </Button>
               </div>
             </div>
           </Card.Header>
@@ -202,7 +203,9 @@ export default function Articals(props) {
               <tbody>
                 {articles.map((item) => (
                   <tr>
-                    <td><img src={item.profile} width={70} height={70}/></td>
+                    <td>
+                      <img src={item.profile} width={70} height={70} />
+                    </td>
                     <td>{item.title}</td>
                     <td>{item.category}</td>
                     <td>{item.description}</td>
@@ -222,7 +225,6 @@ export default function Articals(props) {
                           {svg1}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                         
                           {item.isDisable ? (
                             <Dropdown.Item onClick={() => onAction(item._id)}>
                               Enable
@@ -241,21 +243,28 @@ export default function Articals(props) {
                     </td>
                   </tr>
                 ))}
-               
               </tbody>
             </Table>
-             {articles?.length === 0 && !loader ? (
+            {articles?.length === 0 && !loader ? (
               <div className="justify-content-center d-flex my-5 ">
                 Sorry, Data Not Found!
               </div>
             ) : (
               ""
             )}
-           <Pagination pageCount={pageCount} pageValue={currentPage} setPage={setCurrentPage}/>
+            <Pagination
+              pageCount={pageCount}
+              pageValue={currentPage}
+              setPage={setCurrentPage}
+            />
           </Card.Body>
         </Card>
       </Col>
-      <AddArtical show={postModal} table={getTableData}  onHide={() => setPostModal(false)} />
+      <AddArtical
+        show={postModal}
+        table={getTableData}
+        onHide={() => setPostModal(false)}
+      />
       {loader && <Spinner />}
     </div>
   );

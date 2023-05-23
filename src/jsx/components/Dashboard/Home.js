@@ -54,7 +54,7 @@ const Home = (props) => {
           <h2 className="text-black font-w600 mb-0">Dashboard</h2>
           <p className="mb-0">Welcome to Davur Admin!</p>
         </div>
-        {/* <Dropdown className="dropdown custom-dropdown">
+        <Dropdown className="dropdown custom-dropdown">
           <Dropdown.Toggle
             className="btn btn-sm btn-primary light d-flex align-items-center svg-btn"
             data-toggle="dropdown"
@@ -75,19 +75,25 @@ const Home = (props) => {
             </svg>
             <div className="text-left ml-3">
               <span className="d-block fs-16">Filter Periode</span>
-              <small className="d-block fs-13">4 June 2020 - 4 July 2020</small>
+        
             </div>
-            {/* <i className="fa fa-angle-down scale5 ml-3" /> 
+          {/* <i className="fa fa-angle-down scale5 ml-3" />  */}
           </Dropdown.Toggle>
           <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
             <Dropdown.Item className="dropdown-item" to="#">
-              4 June 2020 - 4 July 2020
+              Today
             </Dropdown.Item>
             <Dropdown.Item className="dropdown-item" to="#">
-              5 july 2020 - 4 Aug 2020
+              This Week
+            </Dropdown.Item>
+            <Dropdown.Item className="dropdown-item" to="#">
+              This Month
+            </Dropdown.Item>
+            <Dropdown.Item className="dropdown-item" to="#">
+              This Year
             </Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown> */}
+        </Dropdown>
       </div>
       <div className="row">
         <div className="col-xl-3 col-xxl-3 col-lg-6 col-md-6 col-sm-6">
@@ -606,7 +612,7 @@ const Home = (props) => {
         </div> */}
       </div>
       <div>
-      <Col xl={9} lg={10}>
+      <Col xl={9} lg={10} className="pl-0">
           <Card>
             <Card.Header>
               <Card.Title>Line chart</Card.Title>

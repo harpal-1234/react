@@ -7,12 +7,13 @@ import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
 import { uploadFile } from "react-s3";
 import { postArticle } from "../../services/ArticleService/ArticleService";
-export default function AddArtical({ show, onHide,table }) {
+window.Buffer = window.Buffer || require("buffer").Buffer;
+export default function AddArtical({ show, onHide, table }) {
   const config = {
-    bucketName: "pushyy-app",
+    bucketName: "traintab",
     region: "us-west-2",
-    accessKeyId: "AKIA2OS2KQJKGLET7ZE5",
-    secretAccessKey: "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",
+    accessKeyId: "AKIAWTWYHC4USCNNQDXK",
+    secretAccessKey: "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",
   };
   let responseImage = {};
   const [loader, setLoader] = useState(false);
@@ -50,7 +51,7 @@ export default function AddArtical({ show, onHide,table }) {
       progress: undefined,
     });
   };
-  const handleChangeClinical = (content) => {
+  const handleChangeContent = (content) => {
     setDescription(content);
   };
   async function onSubmit(e) {
@@ -59,10 +60,10 @@ export default function AddArtical({ show, onHide,table }) {
 
     let error = false;
     const errorObj = { ...errorsObj };
-    if (image === "") {
-      errorObj.image = "Image is Required !";
-      error = true;
-    }
+    // if (image === "") {
+    //   errorObj.image = "Image is Required !";
+    //   error = true;
+    // }
     if (title === "") {
       errorObj.title = "Title is Required !";
       error = true;
@@ -83,15 +84,15 @@ export default function AddArtical({ show, onHide,table }) {
       responseImage = await uploadFile(file, config);
       console.log(responseImage, "after upload");
     }
-   
-    postArticle(responseImage.location, title,category, description)
+
+    postArticle(responseImage.location, title, category, description)
       .then((response) => {
         console.log(response, "vgvfdfhjvhfvhg");
         setLoader(false);
         notifyTopRight("");
         setImage("");
         setTitle("");
-        setCategory("")
+        setCategory("");
         setDescription("");
         onHide();
         table();
@@ -104,7 +105,7 @@ export default function AddArtical({ show, onHide,table }) {
       });
   }
   return (
-    <Modal className="modal fade" show={show}>
+    <Modal className="modal fade" show={show} centered>
       <div className="">
         <div className="">
           <form>
@@ -122,20 +123,24 @@ export default function AddArtical({ show, onHide,table }) {
               <i className="flaticon-cancel-12 close"></i>
               <div className="add-contact-box">
                 <div className="add-contact-content">
-                <div className="contact-name">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="form-control"
-                      autocomplete="off"
-                      onChange={(e) => setImage(e.target.files[0])}
-                      multiple
-                      style={{ paddingTop: "14px" }}
-                    />
-                    {errors.image && (
-                      <div className="text-danger fs-12">{errors.image}</div>
-                    )}
+                  <div className="form-group mb-3">
+                    <label className="text-black font-w500">Image</label>
+                    <div className="contact-name">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="form-control"
+                        autocomplete="off"
+                        onChange={(e) => setImage(e.target.files[0])}
+                        multiple
+                        style={{ paddingTop: "14px" }}
+                      />
+                      {/* {errors.image && (
+                        <div className="text-danger fs-12">{errors.image}</div>
+                      )} */}
+                    </div>
                   </div>
+
                   <div className="form-group mb-3">
                     <label className="text-black font-w500">Title</label>
                     <div className="contact-name">
@@ -146,10 +151,12 @@ export default function AddArtical({ show, onHide,table }) {
                         name="Cust_Id"
                         required="required"
                         value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => setTitle(e.target.value)}
                         placeholder="title"
                       />
-                      <span className="validation-text"></span>
+                     {errors.title && (
+                        <div className="text-danger fs-12">{errors.title}</div>
+                      )}
                     </div>
                   </div>
                   <div className="form-group mb-3">
@@ -162,10 +169,12 @@ export default function AddArtical({ show, onHide,table }) {
                         name="Date_Join"
                         required="required"
                         value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                        onChange={(e) => setCategory(e.target.value)}
                         placeholder="category"
                       />
-                      <span className="validation-text"></span>
+                      {errors.category && (
+                        <div className="text-danger fs-12">{errors.category}</div>
+                      )}
                     </div>
                   </div>
                   <div className="form-group">
@@ -187,19 +196,18 @@ export default function AddArtical({ show, onHide,table }) {
                           "bullist numlist outdent indent | textcolor | textarea | forecolor backcolor",
                         content_style: "body { color: #000 }",
                       }}
-                      onEditorChange={handleChangeClinical}
+                      onEditorChange={handleChangeContent}
                       name="prescription"
                     />
+                     {errors.description && (
+                        <div className="text-danger fs-12">{errors.description}</div>
+                      )}
                   </div>
                 </div>
               </div>
             </div>
             <div className="modal-footer">
-              <button
-                type="submit"
-                className="btn btn-info"
-                onClick={onSubmit}
-              >
+              <button type="submit" className="btn btn-info" onClick={onSubmit}>
                 Add
               </button>
               <button

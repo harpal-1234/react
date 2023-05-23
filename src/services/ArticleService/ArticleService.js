@@ -6,32 +6,33 @@ import {
   POST_ARTICLE,
 } from "./ArticleEndPoints";
 
-export function getArticle(currentPage, limit) {
+export function getArticle(currentPage, limit, search) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
-  return instance.get(GET_ARTICLES + `?page=${currentPage}&limit=${limit}`, {
-    headers: myHeaders,
-  });
+  return instance.get(
+    GET_ARTICLES + `?page=${currentPage}&limit=${limit}&search=${search}`,
+    {
+      headers: myHeaders,
+    }
+  );
 }
 
 export function deleteArticle(id) {
   const data = localStorage.getItem("tokenDetails");
-  console.log(id)
+  console.log(id);
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
   const postData = {
     id: id,
   };
-  return instance.delete(
-    DELETE_ARTICLE + `?id=${id}`,{
+  return instance.delete(DELETE_ARTICLE + `?id=${id}`, {
     headers: {
       Authorization: `Bearer ${data}`,
     },
-   
-});
+  });
 }
 
 export function actionArticle(id) {
@@ -39,8 +40,8 @@ export function actionArticle(id) {
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
-  const postData = {id};
-  return instance.put(ARTICLE_ACTION ,postData, {
+  const postData = { id };
+  return instance.put(ARTICLE_ACTION, postData, {
     headers: myHeaders,
   });
 }
@@ -48,15 +49,22 @@ export function actionArticle(id) {
 export function postArticle(responseImage, title, category, description) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
+    "Content-Type": "application/x-www-form-urlencoded",
+    'Access-Control-Allow-Origin': '*',
     Authorization: `Bearer ${data}`,
   };
-  const postData = {
-    profile: responseImage,
-    title,
-    category,
-    description,
-  };
-  return instance.post(POST_ARTICLE, postData, {
+  // const postData = {
+  //   image: "responseImage",
+  //   title,
+  //   category,
+  //   description,
+  // };
+  var formdata = new FormData();
+formdata.append("title", title);
+formdata.append("description", description);
+formdata.append("category", category);
+formdata.append("image", "responseImage");
+  return instance.post(POST_ARTICLE, formdata, {
     headers: myHeaders,
   });
 }

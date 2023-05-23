@@ -14,6 +14,7 @@ import {
   getAllUsers,
 } from "../../services/User/UserService";
 import Spinner from "../common/Spinner";
+import ViewImage from "../modal/ViewImage";
 export default function UserManagement(props) {
   const [loader, setLoader] = useState(false);
   const [users, setUsers] = useState([]);
@@ -21,8 +22,8 @@ export default function UserManagement(props) {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
-  
-
+  const [modal, setModal] = useState(false);
+  const [image, setImage] = useState("");
   const limit = 10;
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
@@ -62,6 +63,7 @@ export default function UserManagement(props) {
     getAllUsers(currentPage, limit, search)
       .then((response) => {
         setUsers(response.data.data.Users);
+        setImage(response.data.data.Users.fitnessCertificate)
         const total = response.data.data.countUser;
         setLoader(false);
         setPageCount(Math.ceil(total / limit));
@@ -136,10 +138,10 @@ export default function UserManagement(props) {
         }
       });
   }
-  
+
   useEffect(() => {
     getTableData();
-  }, [currentPage]);
+  }, [currentPage, search]);
 
   return (
     <div>
@@ -158,48 +160,46 @@ export default function UserManagement(props) {
       <Col>
         <Card>
           <Card.Header className="d-block">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="col-8" style={{ flexGrow: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <div
-                      className="input-group border bg-white input-group-sm"
-                      style={{ borderRadius: "8px" }}
-                    >
-                      <input
-                        style={{
-                          paddingBottom: "25px",
-                          paddingTop: "25px",
-                          borderRadius: "10px",
-                          fontSize: "14px",
-                        }}
-                        type="text"
-                        name="table_search"
-                        className="form-control float-right border-0"
-                        placeholder="Search"
-                        // onKeyDown={(e) => {
-                        //   console.log(e.key);
-                        //   if (e.key === "Enter") {
-                        //     handleFetch();
-                        //     // setCurrentPage(0);
-                        //   }
-                        // }}
-                        // onChange={(e) => setSearch(e.target.value.trimEnd())}
-                      />
-                      <div className="input-group-append">
-                        <button
-                          type="button"
-                          className="btn btn-default"
-                        //   onClick={handleFetch}
-                        >
-                          <i className="fa fa-search" />
-                        </button>
-                      </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="col-8" style={{ flexGrow: 1 }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    className="input-group border bg-white input-group-sm"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <input
+                      style={{
+                        paddingBottom: "25px",
+                        paddingTop: "25px",
+                        borderRadius: "10px",
+                        fontSize: "14px",
+                      }}
+                      type="text"
+                      name="table_search"
+                      className="form-control float-right border-0"
+                      placeholder="Search"
+                      // onKeyDown={(e) => {
+                      //   console.log(e.key);
+                      //   if (e.key === "Enter") {
+                      //     handleFetch();
+                      //     // setCurrentPage(0);
+                      //   }
+                      // }}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={getTableData}
+                      >
+                        <i className="fa fa-search" />
+                      </button>
                     </div>
                   </div>
                 </div>
-           
               </div>
-            
+            </div>
           </Card.Header>
           <Card.Body>
             <Table>
@@ -219,6 +219,9 @@ export default function UserManagement(props) {
                   </th>
                   <th>
                     <strong>CATEGORY</strong>
+                  </th>
+                  <th>
+                    <strong>CERTIFICATE</strong>
                   </th>
                   <th>
                     <strong>APPROVAL STATUS</strong>
@@ -249,6 +252,15 @@ export default function UserManagement(props) {
                     <td>{item.phone}</td>
                     <td>{item.typeOfTrainer}</td>
                     <td>
+                      <button
+                        type="button"
+                        className="btn btn-info py-2"
+                        onClick={() => setModal(true)}
+                      >
+                        View
+                      </button>
+                    </td>
+                    <td>
                       {item.isApproved ? (
                         <Badge variant="success light">Approved</Badge>
                       ) : (
@@ -271,10 +283,12 @@ export default function UserManagement(props) {
                           {svg1}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          {
-                            !item.isApproved && <Dropdown.Item onClick={()=>onApprove(item._id)}>Approve Profile</Dropdown.Item>
-                          }
-                         
+                          {!item.isApproved && (
+                            <Dropdown.Item onClick={() => onApprove(item._id)}>
+                              Approve Profile
+                            </Dropdown.Item>
+                          )}
+
                           <Dropdown.Item>Download</Dropdown.Item>
 
                           {item.isBlocked ? (
@@ -330,6 +344,12 @@ export default function UserManagement(props) {
           </Card.Body>
         </Card>
       </Col>
+      <ViewImage
+        show={modal}
+        table={getTableData}
+        image ={image}
+        onHide={() => setModal(false)}
+      />
       {loader && <Spinner />}
     </div>
   );

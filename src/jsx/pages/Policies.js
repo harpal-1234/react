@@ -87,7 +87,7 @@ export default function Policies() {
   >
   <option hidden>Select policy</option>
     <option>Privacy Policy</option>
-    <option>Cookie Policy</option>
+    <option>Terms & Conditions</option>
   </select>
   </div>
   

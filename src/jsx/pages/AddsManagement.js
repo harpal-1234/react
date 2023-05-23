@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Card, Col, Dropdown, Table } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  Table,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { actionAdvertise, deleteAdvertise, getAdvertise } from "../../services/Advertise/AdvertiseService";
+import {
+  actionAdvertise,
+  deleteAdvertise,
+  getAdvertise,
+} from "../../services/Advertise/AdvertiseService";
 import Pagination from "../common/Pagination";
 import Spinner from "../common/Spinner";
 import PageTitle from "../layouts/PageTitle";
@@ -53,7 +65,7 @@ export default function AddsManagement(props) {
   const limit = 5;
   function getTableData() {
     setLoader(true);
-    getAdvertise(currentPage, limit)
+    getAdvertise(currentPage, limit, search)
       .then((response) => {
         setData(response.data.data.Advertisements);
         const total = response.data.data.countAdvertisements;
@@ -128,16 +140,12 @@ export default function AddsManagement(props) {
         pauseOnHover
       />
       <PageTitle activeMenu="Advertisement List" motherMenu="Advertisement" />
-      <div className="d-flex justify-content-end mb-3">
-        <Button className="btn btn-primary" onClick={() => setPostModal(true)}>
-          Add New +
-        </Button>
-      </div>
+
       <Col>
         <Card>
           <Card.Header className="d-block">
             <div className="d-flex justify-content-between ">
-              <div className="col-4" style={{ flexGrow: 1 }}>
+              <div className="col-6" style={{ flexGrow: 1 }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <div
                     className="input-group border bg-white input-group-sm"
@@ -154,26 +162,27 @@ export default function AddsManagement(props) {
                       name="table_search"
                       className="form-control float-right border-0"
                       placeholder="Search"
-                      // onKeyDown={(e) => {
-                      //   console.log(e.key);
-                      //   if (e.key === "Enter") {
-                      //     handleFetch();
-                      //     // setCurrentPage(0);
-                      //   }
-                      // }}
-                      // onChange={(e) => setSearch(e.target.value.trimEnd())}
+                      onChange={(e) => setSearch(e.target.value)}
                     />
                     <div className="input-group-append">
                       <button
                         type="button"
                         className="btn btn-default"
-                        //   onClick={handleFetch}
+                        onClick={getTableData}
                       >
                         <i className="fa fa-search" />
                       </button>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="">
+                <Button
+                  className="btn btn-primary"
+                  onClick={() => setPostModal(true)}
+                >
+                  Add New +
+                </Button>
               </div>
             </div>
           </Card.Header>
@@ -185,13 +194,13 @@ export default function AddsManagement(props) {
                     <strong>IMAGE</strong>
                   </th>
                   <th>
-                    <strong>TITLE</strong>
+                    <strong>COUPON TITLE</strong>
                   </th>
                   <th>
-                    <strong>CATEGORY</strong>
+                    <strong>COUPON CODE</strong>
                   </th>
                   <th>
-                    <strong>DESCRIPTION</strong>
+                    <strong>OFFER</strong>
                   </th>
                   <th>
                     <strong>STATUS</strong>
@@ -204,10 +213,12 @@ export default function AddsManagement(props) {
               <tbody>
                 {data.map((item) => (
                   <tr>
-                    <td><img src={item.image} width={70} height={70}/></td>
-                    <td>{item.title}</td>
-                    <td>{item.category}category</td>
-                    <td>{item.description}</td>
+                    <td>
+                      <img src={item.image} width={70} height={70} />
+                    </td>
+                    <td>{item.couponTitle}</td>
+                    <td>{item.couponCode}</td>
+                    <td>{item.offer}</td>
                     <td>
                       {item.isDisable ? (
                         <Badge variant="danger light">Deactive</Badge>
@@ -226,22 +237,16 @@ export default function AddsManagement(props) {
                         <Dropdown.Menu>
                           <Dropdown.Item></Dropdown.Item>
                           {item.isDisable ? (
-                            <Dropdown.Item
-                             onClick={() => onAction(item._id)}
-                             >
+                            <Dropdown.Item onClick={() => onAction(item._id)}>
                               Enable
                             </Dropdown.Item>
                           ) : (
-                            <Dropdown.Item 
-                            onClick={() => onAction(item._id)}
-                            >
+                            <Dropdown.Item onClick={() => onAction(item._id)}>
                               Disable
                             </Dropdown.Item>
                           )}
 
-                          <Dropdown.Item 
-                          onClick={() => onDelete(item._id)}
-                          >
+                          <Dropdown.Item onClick={() => onDelete(item._id)}>
                             Delete
                           </Dropdown.Item>
                         </Dropdown.Menu>
@@ -258,11 +263,19 @@ export default function AddsManagement(props) {
             ) : (
               ""
             )}
-            <Pagination pageCount={pageCount} pageValue={currentPage} setPage={setCurrentPage}/>
+            <Pagination
+              pageCount={pageCount}
+              pageValue={currentPage}
+              setPage={setCurrentPage}
+            />
           </Card.Body>
         </Card>
       </Col>
-      <Advertisement show={postModal} onHide={() => setPostModal(false)} />
+      <Advertisement
+        show={postModal}
+        table={getTableData}
+        onHide={() => setPostModal(false)}
+      />
       {loader && <Spinner />}
     </div>
   );

@@ -8,12 +8,12 @@ import {
   VERIFY_USER_DETAILS,
 } from "./UserApiEndPoints";
 export function getAllUsers(currentPage, limit, search) {
-  console.log(search, " search");
+  // console.log(search, " search");
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
-  return instance.get(GET_USERS + `?page=${currentPage}&limit=${limit}`, {
+  return instance.get(GET_USERS + `?page=${currentPage}&limit=${limit}&search=${search}`, {
     headers: myHeaders,
   });
 }
