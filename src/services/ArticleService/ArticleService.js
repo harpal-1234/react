@@ -49,8 +49,9 @@ export function actionArticle(id) {
 export function postArticle(responseImage, title, category, description) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
-    "Content-Type": "application/x-www-form-urlencoded",
     'Access-Control-Allow-Origin': '*',
+    // "Content-Type": "application/x-www-form-urlencoded",
+    
     Authorization: `Bearer ${data}`,
   };
   // const postData = {
@@ -63,8 +64,9 @@ export function postArticle(responseImage, title, category, description) {
 formdata.append("title", title);
 formdata.append("description", description);
 formdata.append("category", category);
-formdata.append("image", "responseImage");
+formdata.append("image", responseImage);
   return instance.post(POST_ARTICLE, formdata, {
     headers: myHeaders,
-  });
+  }
+  ,);
 }

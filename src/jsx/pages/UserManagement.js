@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Dropdown, Card, Table, Badge, Col } from "react-bootstrap";
+import { Dropdown, Card, Table, Badge, Col, Button } from "react-bootstrap";
 import PageTitle from "../layouts/PageTitle";
-
 import swal from "sweetalert";
 // import Spinner from "../reusable/Spinner";
 // import ReactPaginate from "react-paginate";
@@ -15,6 +14,8 @@ import {
 } from "../../services/User/UserService";
 import Spinner from "../common/Spinner";
 import ViewImage from "../modal/ViewImage";
+import AddUser from "../modal/AddUser";
+import Pagination from "../common/Pagination";
 export default function UserManagement(props) {
   const [loader, setLoader] = useState(false);
   const [users, setUsers] = useState([]);
@@ -23,8 +24,10 @@ export default function UserManagement(props) {
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(false);
+  const [userModal, setUserModal] = useState(false);
   const [image, setImage] = useState("");
   const limit = 10;
+  const imgUrl = "https://traintab.s3.us-west-2.amazonaws.com/"
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -62,20 +65,21 @@ export default function UserManagement(props) {
     setLoader(true);
     getAllUsers(currentPage, limit, search)
       .then((response) => {
+        console.log(response.data.data.Users)
         setUsers(response.data.data.Users);
-        setImage(response.data.data.Users.fitnessCertificate)
+        setImage(response.data.data.Users.fitnessCertificate);
         const total = response.data.data.countUser;
         setLoader(false);
         setPageCount(Math.ceil(total / limit));
-        console.log(response.data.data.users, " table data ");
+       
       })
       .catch((error) => {
-        console.log(error, "helooooooooo");
+        console.log(error,"error");
         setLoader(false);
-        // if (error.response.data.statusCode === 401) {
-        //   localStorage.clear("tokenDetails");
-        //   props.history.push("/login");
-        // }
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("tokenDetails");
+          props.history.push("/login");
+        }
       });
   }
 
@@ -199,6 +203,14 @@ export default function UserManagement(props) {
                   </div>
                 </div>
               </div>
+              <div className="d-flex justify-content-end mb-3">
+                <Button
+                  className="btn btn-primary"
+                  onClick={() => setUserModal(true)}
+                >
+                  Add New +
+                </Button>
+              </div>
             </div>
           </Card.Header>
           <Card.Body>
@@ -235,16 +247,14 @@ export default function UserManagement(props) {
                 </tr>
               </thead>
               <tbody>
-                {users.map((item) => (
-                  <tr>
+                {users.map((item,i) => (
+                  <tr key={i}>
                     <td>
-                      <img src={item.profile} width={70} height={70} />
+                      <img src={imgUrl + item.profile} width={70} height={70} />
                     </td>
                     <td
-                    // onClick={() => (
-                    //   props.history.push("/users-order-listing"),
-                    //   saveUserIdInLocalStorage(item._id)
-                    // )}
+                      onClick={() => props.history.push("/user-details")}
+                      style={{ cursor: "pointer" }}
                     >
                       {item.fName}
                     </td>
@@ -289,7 +299,7 @@ export default function UserManagement(props) {
                             </Dropdown.Item>
                           )}
 
-                          <Dropdown.Item>Download</Dropdown.Item>
+                         
 
                           {item.isBlocked ? (
                             <Dropdown.Item onClick={() => onAction(item._id)}>
@@ -311,44 +321,31 @@ export default function UserManagement(props) {
                 ))}
               </tbody>
             </Table>
-            {/* {users?.length === 0 && !loader ? (
+            {users?.length === 0 && !loader ? (
               <div className="justify-content-center d-flex my-5 ">
                 Sorry, Data Not Found!
               </div>
             ) : (
               ""
             )}
-            {pageCount > 1 && (
-              <ReactPaginate
-                pageCount={pageCount}
-                forcePage={currentPage}
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"....."}
-                marginPagesDisplayed={2}
-                containerClassName={"pagination "}
-                pageClassName={"page-item"}
-                pageLinkClassName={"page-link"}
-                previousClassName={"page-item"}
-                previousLinkClassName={"page-link"}
-                nextClassName={"page-item"}
-                nextLinkClassName={"page-link"}
-                breakClassName={"page-item"}
-                breakLinkClassName={"page-link"}
-                activeClassName={"page-item active"}
-                onPageChange={(selected) => {
-                  setCurrentPage(selected.selected);
-                }}
-              />
-            )} */}
+           <Pagination
+              pageCount={pageCount}
+              pageValue={currentPage}
+              setPage={setCurrentPage}
+            />
           </Card.Body>
         </Card>
       </Col>
       <ViewImage
         show={modal}
         table={getTableData}
-        image ={image}
+        image={image}
         onHide={() => setModal(false)}
+      />
+      <AddUser
+        show={userModal}
+        table={getTableData}
+        onHide={() => setUserModal(false)}
       />
       {loader && <Spinner />}
     </div>

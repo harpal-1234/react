@@ -112,6 +112,7 @@ import Notification from './pages/Notification'
 import Policies from './pages/Policies'
 import Articals from './pages/Articals'
 import AddsManagement from './pages/AddsManagement'
+import UserDetails from './pages/UserDetails'
 
 
 const Markup = () => {
@@ -136,7 +137,7 @@ const Markup = () => {
     /// User management
 
     { url: 'user-management', component: UserManagement },    
-
+    { url: 'user-details', component: UserDetails },  
     /// Events
     { url: 'artical-management', component: Articals }, 
     { url: 'advertise-management', component: AddsManagement }, 

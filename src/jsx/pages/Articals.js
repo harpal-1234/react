@@ -201,8 +201,8 @@ export default function Articals(props) {
                 </tr>
               </thead>
               <tbody>
-                {articles.map((item) => (
-                  <tr>
+                {articles.map((item,i) => (
+                  <tr key={i}>
                     <td>
                       <img src={item.profile} width={70} height={70} />
                     </td>

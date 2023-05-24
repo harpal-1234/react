@@ -130,7 +130,7 @@ export default function AddArtical({ show, onHide, table }) {
                         type="file"
                         accept="image/*"
                         className="form-control"
-                        autocomplete="off"
+                        
                         onChange={(e) => setImage(e.target.files[0])}
                         multiple
                         style={{ paddingTop: "14px" }}
@@ -147,7 +147,7 @@ export default function AddArtical({ show, onHide, table }) {
                       <input
                         type="text"
                         className="form-control"
-                        autocomplete="off"
+                        
                         name="Cust_Id"
                         required="required"
                         value={title}
@@ -165,7 +165,7 @@ export default function AddArtical({ show, onHide, table }) {
                       <input
                         type="text"
                         className="form-control"
-                        autocomplete="off"
+                        
                         name="Date_Join"
                         required="required"
                         value={category}
