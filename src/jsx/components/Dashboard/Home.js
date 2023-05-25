@@ -74,7 +74,7 @@ const Home = (props) => {
               </g>
             </svg>
             <div className="text-left ml-3">
-              <span className="d-block fs-16">Filter Periode</span>
+              <span className="d-block fs-16">Filter Period</span>
         
             </div>
           {/* <i className="fa fa-angle-down scale5 ml-3" />  */}

@@ -8,7 +8,8 @@ import {
   Form,
   Table,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link,  } from "react-router-dom";
+import Switch from "react-switch";
 import { toast, ToastContainer } from "react-toastify";
 import {
   actionAdvertise,
@@ -17,6 +18,7 @@ import {
 } from "../../services/Advertise/AdvertiseService";
 import Pagination from "../common/Pagination";
 import Spinner from "../common/Spinner";
+import SwitchBotton from "../components/ReactSwitch";
 import PageTitle from "../layouts/PageTitle";
 import AddArtical from "../modal/AddArtical";
 import Advertisement from "../modal/Advertisement";
@@ -62,7 +64,7 @@ export default function AddsManagement(props) {
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
 
-  const limit = 5;
+  const limit = 10;
   function getTableData() {
     setLoader(true);
     getAdvertise(currentPage, limit, search)
@@ -126,6 +128,9 @@ export default function AddsManagement(props) {
     getTableData();
     console.log(currentPage, " new 111");
   }, [currentPage]);
+
+
+ 
   return (
     <div>
       <ToastContainer
@@ -144,7 +149,7 @@ export default function AddsManagement(props) {
       <Col>
         <Card>
           <Card.Header className="d-block">
-            <div className="d-flex justify-content-between ">
+            <div className="d-flex justify-content-between align-items-center">
               <div className="col-6" style={{ flexGrow: 1 }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <div
@@ -176,6 +181,7 @@ export default function AddsManagement(props) {
                   </div>
                 </div>
               </div>
+          <SwitchBotton/>
               <div className="">
                 <Button
                   className="btn btn-primary"
@@ -211,8 +217,8 @@ export default function AddsManagement(props) {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => (
-                  <tr>
+                {data.map((item,i) => (
+                  <tr key={i}>
                     <td>
                       <img src={item.image} width={70} height={70} />
                     </td>

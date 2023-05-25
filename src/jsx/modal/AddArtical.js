@@ -14,6 +14,7 @@ export default function AddArtical({ show, onHide, table }) {
     region: "us-west-2",
     accessKeyId: "AKIAWTWYHC4USCNNQDXK",
     secretAccessKey: "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",
+    // successActionstatus: 201,
   };
   let responseImage = {};
   const [loader, setLoader] = useState(false);
@@ -78,12 +79,13 @@ export default function AddArtical({ show, onHide, table }) {
     if (error) {
       return;
     }
-    const file = new File([image], new Date().getTime());
-    console.log(file, "after file creation");
-    if (file.size > 0) {
-      responseImage = await uploadFile(file, config);
+    // const file = new File([image], new Date().getTime());
+    // console.log(file, "after file creation");
+    // if (file.size > 0) {
+      responseImage = await uploadFile(image, config);
+      // responseImage = await uploadFile(file, config);
       console.log(responseImage, "after upload");
-    }
+    // }
 
     postArticle(responseImage.location, title, category, description)
       .then((response) => {

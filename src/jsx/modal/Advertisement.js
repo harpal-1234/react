@@ -5,9 +5,7 @@ import { toast } from "react-toastify";
 import { postAdvertise } from "../../services/Advertise/AdvertiseService";
 window.Buffer = window.Buffer || require("buffer").Buffer;
 export default function Advertisement({ show,table, onHide }) {
- 
-  
- 
+
   const config = {
     bucketName: "traintab",
     region: "us-west-2",

@@ -52,7 +52,7 @@ export function postAdvertise(responseImage, couponTitle, couponCode, offer) {
     Authorization: `Bearer ${data}`,
   };
   const postData = {
-    profile: responseImage,
+    image: responseImage,
     couponTitle,
     couponCode,
     offer,

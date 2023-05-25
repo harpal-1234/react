@@ -1,7 +1,12 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 import dummyImage from "../../images/1.jpg"
+import { saveAs } from 'file-saver'
 export default function ViewImage({ show,image, onHide, table }) {
+
+  const downloadImage = () => {
+    saveAs(dummyImage, 'image.jpg') // Put your image url here.
+  }
   return (
     <Modal className="modal fade" show={show} centered>
         <div className='w-100'>
@@ -10,7 +15,7 @@ export default function ViewImage({ show,image, onHide, table }) {
               <button
                 type="submit"
                 className="btn btn-info"
-                // onClick={onSubmit}
+                onClick={downloadImage}
               >
                 Download
               </button>
@@ -20,7 +25,7 @@ export default function ViewImage({ show,image, onHide, table }) {
                 className="btn btn-danger"
               >
                 {" "}
-                <i className="flaticon-delete-1"></i> Discard
+                <i className="flaticon-delete-1"></i> Close
               </button>
             </div>
         </div>

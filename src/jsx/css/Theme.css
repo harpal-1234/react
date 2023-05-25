@@ -22,3 +22,12 @@ select:required:invalid {
     border-radius: 12px !important;
     box-shadow: 0 0 0 0 #2684ff !important;
 }
+.react-switch {
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .text-font-style{
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+  }

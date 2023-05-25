@@ -27,7 +27,7 @@ export default function UserManagement(props) {
   const [userModal, setUserModal] = useState(false);
   const [image, setImage] = useState("");
   const limit = 10;
-  const imgUrl = "https://traintab.s3.us-west-2.amazonaws.com/"
+  const imgUrl = "https://traintab.s3.amazonaws.com/"
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -250,7 +250,7 @@ export default function UserManagement(props) {
                 {users.map((item,i) => (
                   <tr key={i}>
                     <td>
-                      <img src={imgUrl + item.profile} width={70} height={70} />
+                      <img src={item.profile} width={70} height={70} />
                     </td>
                     <td
                       onClick={() => props.history.push("/user-details")}
