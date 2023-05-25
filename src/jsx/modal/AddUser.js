@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { uploadFile } from "react-s3";
+import { MultiSelect } from "../pages/MultiSelect";
 export default function AddUser({ show, table, onHide }) {
   const config = {
     bucketName: "traintab",
@@ -18,17 +19,17 @@ export default function AddUser({ show, table, onHide }) {
   const [dob, setDob] = useState("");
   const [address, setAddress] = useState("");
   const [phNumber, setPhNumber] = useState("");
-  const [typeOfTrainer, setTypeOfTrainer] = useState("");
-  const [trainingLocation, setTrainingLocation] = useState("");
-  const [services, setServices] = useState("");
-  const [years, setYears] = useState("");
-  const [clients, setClients] = useState("");
+  const [typeOfTrainer, setTypeOfTrainer] = useState([]);
+  const [trainingLocation, setTrainingLocation] = useState([]);
+  const [services, setServices] = useState([]);
+  const [years, setYears] = useState([]);
+  const [clients, setClients] = useState([]);
   const [noOfCertificate, setNoOfCertificate] = useState("");
   const [certificate, setCertificate] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
   const [apiError, setApiError] = useState("");
-
+  
   let errorsObj = {
     image: "",
     fname: "",
@@ -49,6 +50,45 @@ export default function AddUser({ show, table, onHide }) {
   };
   const [errors, setErrors] = useState(errorsObj);
 
+  const options = [
+    { value: "Personal Trainer",label: "Personal Trainer",},
+    { value: "Group Fitness Instructor", label: "Group Fitness Instructor" },
+    { value: "Sports Coach ", label: "Sports Coach " },
+    { value: "Lifestyle Coach", label: "Lifestyle Coach" },
+    { value: "Athletic Trainer", label: "Athletic Trainer" },
+    { value: "Bodybuilding Coach", label: "Bodybuilding Coach" },
+  ];
+  const locationOptions = [
+    { value: "Outdoor/Park",label: "Outdoor/Park",},
+    { value: "Gym Owner", label: "Gym Owner" },
+    { value: "Boutique Gym", label: "Boutique Gym" },
+    { value: "University", label: "University" },
+    { value: "CF Gym", label: "CF Gym" },
+    { value: "Personal Training Gym", label: "Personal Training Gym" },
+  ];
+  const serviceOptions = [
+    { value: "In Person",label: "In Person",},
+    { value: "Virtual", label: "Virtual" },
+    { value: "1-0n-1 Personal Training ", label: "1-0n-1 Personal Training " },
+    { value: "Partner Personal Training", label: "Partner Personal Training" },
+    { value: "Group Training", label: "Group Training" },
+    { value: "Educational Classes/Seminars", label: "Educational Classes/Seminars" },
+  ];
+  const yearsOptions = [
+    { value: "0-1",label: "0-1",},
+    { value: "1-3", label: "1-3" },
+    { value: "3-5", label: "3-5" },
+    { value: "5-10", label: "5-10" },
+    { value: "10+", label: "10+" },
+    
+  ];
+  const clientOptions = [
+    { value: "0-10",label: "0-10",},
+    { value: "11-25", label: "11-25" },
+    { value: "26-40", label: "26-40" },
+    { value: "41-60", label: "41-60" },
+    { value: "61+", label: "61+" },
+  ];
   const notifyTopRight = () => {
     toast.success(`✅ Created Successfully.`, {
       position: "top-right",
@@ -91,61 +131,61 @@ export default function AddUser({ show, table, onHide }) {
       error = true;
     }
     if (email === "") {
-        errorObj.email = "Image is Required !";
-        error = true;
-      }
-      if (dob === "") {
-        errorObj.dob = "Title is Required !";
-        error = true;
-      }
-  
-      if (address === "") {
-        errorObj.address = "This Field is Required !";
-        error = true;
-      }
-      if (phNumber === "") {
-        errorObj.phNumber = "Image is Required !";
-        error = true;
-      }
-      if (typeOfTrainer === "") {
-        errorObj.typeOfTrainer = "Title is Required !";
-        error = true;
-      }
-  
-      if (trainingLocation === "") {
-        errorObj.trainingLocation = "This Field is Required !";
-        error = true;
-      }
-      if (services === "") {
-        errorObj.services = "Image is Required !";
-        error = true;
-      }
-      if (years === "") {
-        errorObj.years = "Title is Required !";
-        error = true;
-      }
-  
-      if (clients === "") {
-        errorObj.clients = "This Field is Required !";
-        error = true;
-      }
-      if (noOfCertificate === "") {
-        errorObj.noOfCertificate = "This Field is Required !";
-        error = true;
-      }
-      if (certificate === "") {
-        errorObj.certificate = "Image is Required !";
-        error = true;
-      }
-      if (password === "") {
-        errorObj.password = "Title is Required !";
-        error = true;
-      }
-  
-      if (verifyPassword === "") {
-        errorObj.verifyPassword = "This Field is Required !";
-        error = true;
-      }
+      errorObj.email = "Image is Required !";
+      error = true;
+    }
+    if (dob === "") {
+      errorObj.dob = "Title is Required !";
+      error = true;
+    }
+
+    if (address === "") {
+      errorObj.address = "This Field is Required !";
+      error = true;
+    }
+    if (phNumber === "") {
+      errorObj.phNumber = "Image is Required !";
+      error = true;
+    }
+    if (typeOfTrainer === "") {
+      errorObj.typeOfTrainer = "Title is Required !";
+      error = true;
+    }
+
+    if (trainingLocation === "") {
+      errorObj.trainingLocation = "This Field is Required !";
+      error = true;
+    }
+    if (services === "") {
+      errorObj.services = "Image is Required !";
+      error = true;
+    }
+    if (years === "") {
+      errorObj.years = "Title is Required !";
+      error = true;
+    }
+
+    if (clients === "") {
+      errorObj.clients = "This Field is Required !";
+      error = true;
+    }
+    if (noOfCertificate === "") {
+      errorObj.noOfCertificate = "This Field is Required !";
+      error = true;
+    }
+    if (certificate === "") {
+      errorObj.certificate = "Image is Required !";
+      error = true;
+    }
+    if (password === "") {
+      errorObj.password = "Title is Required !";
+      error = true;
+    }
+
+    if (verifyPassword === "") {
+      errorObj.verifyPassword = "This Field is Required !";
+      error = true;
+    }
     setErrors(errorObj);
     if (error) {
       return;
@@ -233,14 +273,11 @@ export default function AddUser({ show, table, onHide }) {
                         type="text"
                         className="form-control"
                         required="required"
-                       
                         onChange={(e) => setLname(e.target.value)}
                         placeholder="Last name"
                       />
                       {errors.lname && (
-                        <div className="text-danger fs-12">
-                          {errors.lname}
-                        </div>
+                        <div className="text-danger fs-12">{errors.lname}</div>
                       )}
                     </div>
                   </div>
@@ -252,15 +289,12 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                        
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email"
                       />
                     </div>
                     {errors.email && (
-                      <div className="text-danger fs-12">
-                        {errors.email}
-                      </div>
+                      <div className="text-danger fs-12">{errors.email}</div>
                     )}
                   </div>
                   <div className="form-group">
@@ -272,15 +306,12 @@ export default function AddUser({ show, table, onHide }) {
                         type="text"
                         className="form-control"
                         required="required"
-                    
                         onChange={(e) => setDob(e.target.value)}
                         placeholder="Date of birth"
                       />
                     </div>
                     {errors.dob && (
-                      <div className="text-danger fs-12">
-                        {errors.dob}
-                      </div>
+                      <div className="text-danger fs-12">{errors.dob}</div>
                     )}
                   </div>
                   <div className="form-group">
@@ -291,15 +322,12 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                   
                         onChange={(e) => setPhNumber(e.target.value)}
                         placeholder="Phone number"
                       />
                     </div>
                     {errors.phNumber && (
-                      <div className="text-danger fs-12">
-                        {errors.phNumber}
-                      </div>
+                      <div className="text-danger fs-12">{errors.phNumber}</div>
                     )}
                   </div>
                   <div className="form-group">
@@ -310,32 +338,26 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                       
                         onChange={(e) => setAddress(e.target.value)}
                         placeholder="Address"
                       />
                     </div>
                     {errors.address && (
-                      <div className="text-danger fs-12">
-                        {errors.address}
-                      </div>
+                      <div className="text-danger fs-12">{errors.address}</div>
                     )}
                   </div>
                   <div className="form-group">
                     <label className="text-black font-w500">
                       Type Of Trainer
                     </label>
-                    <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="Date_Join"
-                        required="required"
-                        
-                        onChange={(e) => setTypeOfTrainer(e.target.value)}
-                        placeholder="Type of trainer"
-                      />
-                    </div>
+                    <MultiSelect
+                      className="form-control"
+                      options={options}
+                      value={typeOfTrainer}
+                      onChange={setTypeOfTrainer}
+                      required
+                    />
+                   
                     {errors.typeOfTrainer && (
                       <div className="text-danger fs-12">
                         {errors.typeOfTrainer}
@@ -347,15 +369,14 @@ export default function AddUser({ show, table, onHide }) {
                       Training Location
                     </label>
                     <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="Date_Join"
-                        required="required"
-                        
-                        onChange={(e) => setTrainingLocation(e.target.value)}
-                        placeholder="Training location"
-                      />
+                    <MultiSelect
+                      className="form-control"
+                      options={locationOptions}
+                      value={trainingLocation}
+                      onChange={setTrainingLocation}
+                      required
+                    />
+                     
                     </div>
                     {errors.trainingLocation && (
                       <div className="text-danger fs-12">
@@ -366,20 +387,17 @@ export default function AddUser({ show, table, onHide }) {
                   <div className="form-group">
                     <label className="text-black font-w500">Services</label>
                     <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="Date_Join"
-                        required="required"
-                        
-                        onChange={(e) => setServices(e.target.value)}
-                        placeholder="Services"
-                      />
+                    <MultiSelect
+                      className="form-control"
+                      options={serviceOptions}
+                      value={services}
+                      onChange={setServices}
+                      required
+                    />
+                     
                     </div>
                     {errors.services && (
-                      <div className="text-danger fs-12">
-                        {errors.services}
-                      </div>
+                      <div className="text-danger fs-12">{errors.services}</div>
                     )}
                   </div>
                   <div className="form-group">
@@ -387,39 +405,31 @@ export default function AddUser({ show, table, onHide }) {
                       Years In Business
                     </label>
                     <div className="contact-name">
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="Date_Join"
-                        required="required"
-                        
-                        onChange={(e) => setYears(e.target.value)}
-                        placeholder="Years"
-                      />
+                    <MultiSelect
+                      className="form-control"
+                      options={yearsOptions}
+                      value={years}
+                      onChange={setYears}
+                      required
+                    />
                     </div>
                     {errors.years && (
-                      <div className="text-danger fs-12">
-                        {errors.years}
-                      </div>
+                      <div className="text-danger fs-12">{errors.years}</div>
                     )}
                   </div>
                   <div className="form-group">
                     <label className="text-black font-w500">Clients</label>
                     <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="Date_Join"
-                        required="required"
-                        
-                        onChange={(e) => setClients(e.target.value)}
-                        placeholder="Clients"
-                      />
+                    <MultiSelect
+                      className="form-control"
+                      options={clientOptions}
+                      value={clients}
+                      onChange={setClients}
+                      required
+                    />
                     </div>
                     {errors.clients && (
-                      <div className="text-danger fs-12">
-                        {errors.clients}
-                      </div>
+                      <div className="text-danger fs-12">{errors.clients}</div>
                     )}
                   </div>
                   <div className="form-group">
@@ -432,7 +442,6 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                        
                         onChange={(e) => setNoOfCertificate(e.target.value)}
                         placeholder="Number of certification"
                       />
@@ -453,7 +462,6 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                        
                         onChange={(e) => setCertificate(e.target.value)}
                         placeholder="Certificate"
                       />
@@ -472,15 +480,12 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                        
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                       />
                     </div>
                     {errors.password && (
-                      <div className="text-danger fs-12">
-                        {errors.password}
-                      </div>
+                      <div className="text-danger fs-12">{errors.password}</div>
                     )}
                   </div>
                   <div className="form-group">
@@ -493,7 +498,6 @@ export default function AddUser({ show, table, onHide }) {
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                        
                         onChange={(e) => setVerifyPassword(e.target.value)}
                         placeholder="Confirm password"
                       />

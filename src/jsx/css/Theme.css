@@ -1,3 +1,7 @@
+a{
+  text-decoration: none;
+}
+
 .user-select{
     border: 1px solid #f0f1f5 !important;
     padding-top: 16px !important;

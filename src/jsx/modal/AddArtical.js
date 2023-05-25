@@ -82,9 +82,9 @@ export default function AddArtical({ show, onHide, table }) {
     // const file = new File([image], new Date().getTime());
     // console.log(file, "after file creation");
     // if (file.size > 0) {
-      responseImage = await uploadFile(image, config);
-      // responseImage = await uploadFile(file, config);
-      console.log(responseImage, "after upload");
+    responseImage = await uploadFile(image, config);
+    // responseImage = await uploadFile(file, config);
+    console.log(responseImage, "after upload");
     // }
 
     postArticle(responseImage.location, title, category, description)
@@ -109,120 +109,153 @@ export default function AddArtical({ show, onHide, table }) {
   return (
     <Modal className="modal fade" show={show} centered>
       <div className="">
-        <div className="">
-          <form>
-            <div className="modal-header">
-              <h4 className="modal-title fs-20">Add Artical Details</h4>
-              <button
-                type="button"
-                className="btn close"
-                onClick={() => onHide()}
-              >
-                <span>×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <i className="flaticon-cancel-12 close"></i>
-              <div className="add-contact-box">
-                <div className="add-contact-content">
-                  <div className="form-group mb-3">
-                    <label className="text-black font-w500">Image</label>
-                    <div className="contact-name">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="form-control"
-                        
-                        onChange={(e) => setImage(e.target.files[0])}
-                        multiple
-                        style={{ paddingTop: "14px" }}
-                      />
-                      {/* {errors.image && (
-                        <div className="text-danger fs-12">{errors.image}</div>
-                      )} */}
-                    </div>
+        <form>
+          <div className="modal-header">
+            <h4 className="modal-title fs-20">Add Artical Details</h4>
+            <button
+              type="button"
+              className="btn close"
+              onClick={() => onHide()}
+            >
+              <span>×</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <i className="flaticon-cancel-12 close"></i>
+            <div className="add-contact-box">
+              <div className="add-contact-content">
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Article Type</label>
+                  <div className="contact-name">
+                    <select
+                    className="form-control"
+                    
+                    >
+                      <option hidden>Select..</option>
+                      <option>Program</option>
+                      <option>Tips</option>
+                    </select>
+                    {/* {errors.title && (
+                      <div className="text-danger fs-12">{errors.title}</div>
+                    )} */}
                   </div>
-
-                  <div className="form-group mb-3">
-                    <label className="text-black font-w500">Title</label>
-                    <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        
-                        name="Cust_Id"
-                        required="required"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="title"
-                      />
-                     {errors.title && (
-                        <div className="text-danger fs-12">{errors.title}</div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="form-group mb-3">
-                    <label className="text-black font-w500">Category</label>
-                    <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        
-                        name="Date_Join"
-                        required="required"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        placeholder="category"
-                      />
-                      {errors.category && (
-                        <div className="text-danger fs-12">{errors.category}</div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="text-black font-w500">Description</label>
-                    <Editor
-                      init={{
-                        height: 200,
-                        menubar: false,
-                        plugins: [
-                          "advlist autolink lists link image code charmap print preview anchor",
-                          "searchreplace visualblocks code fullscreen",
-                          "insertdatetime media table paste code textcolor wordcount",
-                          "textarea",
-                          "textcolor",
-                          "forecolor backcolor",
-                        ],
-                        toolbar:
-                          "undo redo | formatselect | code |link | image | bold italic backcolor | alignleft aligncenter alignright alignjustify |  \n" +
-                          "bullist numlist outdent indent | textcolor | textarea | forecolor backcolor",
-                        content_style: "body { color: #000 }",
-                      }}
-                      onEditorChange={handleChangeContent}
-                      name="prescription"
+                </div>
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Image</label>
+                  <div className="contact-name">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-control"
+                      onChange={(e) => setImage(e.target.files[0])}
+                      multiple
+                      style={{ paddingTop: "14px" }}
                     />
-                     {errors.description && (
-                        <div className="text-danger fs-12">{errors.description}</div>
-                      )}
+                    {errors.image && (
+                      <div className="text-danger fs-12">{errors.image}</div>
+                    )}
                   </div>
+                </div>
+
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Title</label>
+                  <div className="contact-name">
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="Cust_Id"
+                      required="required"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="title"
+                    />
+                    {errors.title && (
+                      <div className="text-danger fs-12">{errors.title}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Category</label>
+                  <div className="contact-name">
+                    <select
+                    className="form-control"
+                    
+                    >
+                      <option hidden>Select..</option>
+                      <option>Yoga</option>
+                      <option>Workout</option>
+                      <option>Strength</option>
+                      <option>Cardio</option>
+                    </select>
+                    {errors.category && (
+                      <div className="text-danger fs-12">{errors.category}</div>
+                    )}
+                  </div>
+                 
+                </div>
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">SubCategory</label>
+                
+                  <div className="contact-name">
+                    <input
+                      type="text"
+                      className="form-control"
+                    
+                      required="required"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      placeholder="Subcategory"
+                    />
+                    {/* {errors.category && (
+                      <div className="text-danger fs-12">{errors.category}</div>
+                    )} */}
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="text-black font-w500">Description</label>
+                  <Editor
+                    init={{
+                      height: 200,
+                      menubar: false,
+                      plugins: [
+                        "advlist autolink lists link image code charmap print preview anchor",
+                        "searchreplace visualblocks code fullscreen",
+                        "insertdatetime media table paste code textcolor wordcount",
+                        "textarea",
+                        "textcolor",
+                        "forecolor backcolor",
+                      ],
+                      toolbar:
+                        "undo redo | formatselect | code |link | image | bold italic backcolor | alignleft aligncenter alignright alignjustify |  \n" +
+                        "bullist numlist outdent indent | textcolor | textarea | forecolor backcolor",
+                      content_style: "body { color: #000 }",
+                    }}
+                    onEditorChange={handleChangeContent}
+                    name="prescription"
+                  />
+                  {errors.description && (
+                    <div className="text-danger fs-12">
+                      {errors.description}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="submit" className="btn btn-info" onClick={onSubmit}>
-                Add
-              </button>
-              <button
-                type="button"
-                onClick={() => onHide()}
-                className="btn btn-danger"
-              >
-                {" "}
-                <i className="flaticon-delete-1"></i> Discard
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div className="modal-footer">
+            <button type="submit" className="btn btn-info" onClick={onSubmit}>
+              Add
+            </button>
+            <button
+              type="button"
+              onClick={() => onHide()}
+              className="btn btn-danger"
+            >
+              {" "}
+              <i className="flaticon-delete-1"></i> Discard
+            </button>
+          </div>
+        </form>
       </div>
     </Modal>
   );

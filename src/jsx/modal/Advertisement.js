@@ -4,8 +4,7 @@ import { uploadFile } from "react-s3";
 import { toast } from "react-toastify";
 import { postAdvertise } from "../../services/Advertise/AdvertiseService";
 window.Buffer = window.Buffer || require("buffer").Buffer;
-export default function Advertisement({ show,table, onHide }) {
-
+export default function Advertisement({ show, table, onHide }) {
   const config = {
     bucketName: "traintab",
     region: "us-west-2",
@@ -49,7 +48,7 @@ export default function Advertisement({ show,table, onHide }) {
       progress: undefined,
     });
   };
- 
+
   async function onSubmit(e) {
     setLoader(true);
     e.preventDefault();
@@ -85,14 +84,14 @@ export default function Advertisement({ show,table, onHide }) {
       console.log(responseImage, "after upload");
     }
     setLoader(true);
-    postAdvertise(responseImage.location, couponTitle,couponCode, offer)
+    postAdvertise(responseImage.location, couponTitle, couponCode, offer)
       .then((response) => {
         console.log(response, "post response");
         setLoader(false);
         notifyTopRight("");
         setImage("");
         setCouponTitle("");
-        setCouponCode("")
+        setCouponCode("");
         setOffer("");
         onHide();
         table();
@@ -107,110 +106,124 @@ export default function Advertisement({ show,table, onHide }) {
   return (
     <Modal className="modal fade" show={show} centered>
       <div className="">
-        <div className="">
-          <form>
-            <div className="modal-header">
-              <h4 className="modal-title fs-20">Add Advertisement Details</h4>
-              <button
-                type="button"
-                className="btn close"
-                onClick={() => onHide()}
-              >
-                <span>×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <i className="flaticon-cancel-12 close"></i>
-              <div className="add-contact-box">
-                <div className="add-contact-content">
+        <form>
+          <div className="modal-header">
+            <h4 className="modal-title fs-20">Add Advertisement Details</h4>
+            <button
+              type="button"
+              className="btn close"
+              onClick={() => onHide()}
+            >
+              <span>×</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <i className="flaticon-cancel-12 close"></i>
+            <div className="add-contact-box">
+              <div className="add-contact-content">
                 <div className="form-group mb-3">
-                    <label className="text-black font-w500">Image</label>
-                    <div className="contact-name">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="form-control"
-                        autocomplete="off"
-                        onChange={(e) => setImage(e.target.files[0])}
-                        multiple
-                        style={{ paddingTop: "14px" }}
-                      />
-                      {errors.image && (
-                        <div className="text-danger fs-12">{errors.image}</div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="form-group mb-3">
-                    <label className="text-black font-w500">Coupon Title</label>
-                    <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        autocomplete="off"
-                        
-                        required="required"
-                        onChange={(e)=>setCouponTitle(e.target.value)}
-                        placeholder="title"
-                      />
-                       {errors.couponTitle && (
-                      <div className="text-danger fs-12">{errors.couponTitle}</div>
-                    )}
-                    </div>
-                  </div>
-                  <div className="form-group mb-3">
-                    <label className="text-black font-w500">Coupon Code</label>
-                    <div className="contact-name">
-                      <input
-                        type="text"
-                        className="form-control"
-                        autocomplete="off"
-                     
-                        required="required"
-                        onChange={(e)=>setCouponCode(e.target.value)}
-                        placeholder="code"
-                      />
-                       {errors.couponCode && (
-                      <div className="text-danger fs-12">{errors.couponCode}</div>
-                    )}
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="text-black font-w500">Offer</label>
+                  <label className="text-black font-w500">Image</label>
+                  <div className="contact-name">
                     <input
-                        type="text"
-                        className="form-control"
-                        autocomplete="off"
-                       
-                        required="required"
-                        onChange={(e)=>setOffer(e.target.value)}
-                        placeholder="offer"
-                      />
-                      {errors.offer && (
-                      <div className="text-danger fs-12">{errors.offer}</div>
+                      type="file"
+                      accept="image/*"
+                      className="form-control"
+                      autocomplete="off"
+                      onChange={(e) => setImage(e.target.files[0])}
+                      multiple
+                      style={{ paddingTop: "14px" }}
+                    />
+                    {errors.image && (
+                      <div className="text-danger fs-12">{errors.image}</div>
                     )}
                   </div>
                 </div>
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Coupon Title</label>
+                  <div className="contact-name">
+                    <input
+                      type="text"
+                      className="form-control"
+                      autocomplete="off"
+                      required="required"
+                      onChange={(e) => setCouponTitle(e.target.value)}
+                      placeholder="title"
+                    />
+                    {errors.couponTitle && (
+                      <div className="text-danger fs-12">
+                        {errors.couponTitle}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Coupon Code</label>
+                  <div className="contact-name">
+                    <input
+                      type="text"
+                      className="form-control"
+                      autocomplete="off"
+                      required="required"
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="code"
+                    />
+                    {errors.couponCode && (
+                      <div className="text-danger fs-12">
+                        {errors.couponCode}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="text-black font-w500">Offer</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    autocomplete="off"
+                    required="required"
+                    onChange={(e) => setOffer(e.target.value)}
+                    placeholder="offer"
+                  />
+                  {errors.offer && (
+                    <div className="text-danger fs-12">{errors.offer}</div>
+                  )}
+                </div>
+                <div className="form-group mb-3">
+                  <label className="text-black font-w500">Where</label>
+                  <div className="contact-name">
+                    <select
+                    className="form-control"
+                    
+                    >
+                      <option hidden>Select..</option>
+                      <option>Programming</option>
+                      <option>Schedule</option>
+                      <option>History</option>
+                      <option>Tips</option>
+                    </select>
+                    {errors.category && (
+                      <div className="text-danger fs-12">{errors.category}</div>
+                    )}
+                  </div>
+                 
+                </div>
               </div>
             </div>
-            <div className="modal-footer">
-              <button
-                type="submit"
-                className="btn btn-info"
-                onClick={onSubmit}
-              >
-                Add
-              </button>
-              <button
-                type="button"
-                onClick={() => onHide()}
-                className="btn btn-danger"
-              >
-                {" "}
-                <i className="flaticon-delete-1"></i> Discard
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div className="modal-footer">
+            <button type="submit" className="btn btn-info" onClick={onSubmit}>
+              Add
+            </button>
+            <button
+              type="button"
+              onClick={() => onHide()}
+              className="btn btn-danger"
+            >
+              {" "}
+              <i className="flaticon-delete-1"></i> Discard
+            </button>
+          </div>
+        </form>
       </div>
     </Modal>
   );

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Dropdown, Card, Table, Badge, Col, Button } from "react-bootstrap";
 import PageTitle from "../layouts/PageTitle";
-import swal from "sweetalert";
-// import Spinner from "../reusable/Spinner";
-// import ReactPaginate from "react-paginate";
+import Spinner from "../common/Spinner";
+import ViewImage from "../modal/ViewImage";
+import AddUser from "../modal/AddUser";
+import Pagination from "../common/Pagination";
 import { toast, ToastContainer } from "react-toastify";
 import {
   approveUser,
@@ -12,11 +12,11 @@ import {
   deleteUser,
   getAllUsers,
 } from "../../services/User/UserService";
-import Spinner from "../common/Spinner";
-import ViewImage from "../modal/ViewImage";
-import AddUser from "../modal/AddUser";
-import Pagination from "../common/Pagination";
+import { useDispatch } from "react-redux";
+import { setCurrentUserAction } from "../../store/actions/UserDetailsAction";
+
 export default function UserManagement(props) {
+  const dispatch = useDispatch();
   const [loader, setLoader] = useState(false);
   const [users, setUsers] = useState([]);
   const [apiError, setApiError] = useState("");
@@ -27,7 +27,7 @@ export default function UserManagement(props) {
   const [userModal, setUserModal] = useState(false);
   const [image, setImage] = useState("");
   const limit = 10;
-  const imgUrl = "https://traintab.s3.amazonaws.com/"
+  const imgUrl = "https://traintab.s3.amazonaws.com/";
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -65,16 +65,15 @@ export default function UserManagement(props) {
     setLoader(true);
     getAllUsers(currentPage, limit, search)
       .then((response) => {
-        console.log(response.data.data.Users)
+        console.log(response.data.data.Users);
         setUsers(response.data.data.Users);
         setImage(response.data.data.Users.fitnessCertificate);
         const total = response.data.data.countUser;
         setLoader(false);
         setPageCount(Math.ceil(total / limit));
-       
       })
       .catch((error) => {
-        console.log(error,"error");
+        console.log(error, "error");
         setLoader(false);
         if (error.response.data.statusCode === 401) {
           localStorage.clear("tokenDetails");
@@ -214,7 +213,7 @@ export default function UserManagement(props) {
             </div>
           </Card.Header>
           <Card.Body>
-            <Table>
+            <Table responsive>
               <thead style={{ color: "black" }}>
                 <tr>
                   <th>
@@ -247,13 +246,16 @@ export default function UserManagement(props) {
                 </tr>
               </thead>
               <tbody>
-                {users.map((item,i) => (
+                {users.map((item, i) => (
                   <tr key={i}>
                     <td>
                       <img src={item.profile} width={70} height={70} />
                     </td>
                     <td
-                      onClick={() => props.history.push("/user-details")}
+                      onClick={() => (
+                        dispatch(setCurrentUserAction(item)),
+                        props.history.push("/user-details")
+                      )}
                       style={{ cursor: "pointer" }}
                     >
                       {item.fName}
@@ -299,8 +301,6 @@ export default function UserManagement(props) {
                             </Dropdown.Item>
                           )}
 
-                         
-
                           {item.isBlocked ? (
                             <Dropdown.Item onClick={() => onAction(item._id)}>
                               Enable
@@ -328,7 +328,7 @@ export default function UserManagement(props) {
             ) : (
               ""
             )}
-           <Pagination
+            <Pagination
               pageCount={pageCount}
               pageValue={currentPage}
               setPage={setCurrentPage}
