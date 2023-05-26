@@ -228,6 +228,7 @@ export default function AddUser({ show, table, onHide }) {
       // console.log(responseImage, "after certificate upload");
     }
     setLoader(true);
+    alert("alertingnnggggg")
     postUser(
       responseImage.location,
       fname,
