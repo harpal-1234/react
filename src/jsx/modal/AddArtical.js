@@ -84,7 +84,7 @@ export default function AddArtical({ show, onHide, table }) {
     // if (file.size > 0) {
     responseImage = await uploadFile(image, config);
     // responseImage = await uploadFile(file, config);
-    console.log(responseImage, "after upload");
+    // console.log(responseImage, "after upload");
     // }
 
     postArticle(responseImage.location, title, category, description)

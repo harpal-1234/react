@@ -220,12 +220,12 @@ export default function AddUser({ show, table, onHide }) {
     // console.log(file, "after file creation");
     if (file.size > 0) {
       responseImage = await uploadFile(file, config);
-      console.log(responseImage, "after upload");
+      // console.log(responseImage, "after upload");
     }
     const certificatefile = new File([image], new Date().getTime());
     if (certificatefile.size > 0) {
       certificateImage = await uploadFile(certificatefile, config);
-      console.log(responseImage, "after certificate upload");
+      // console.log(responseImage, "after certificate upload");
     }
     setLoader(true);
     postUser(
