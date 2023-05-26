@@ -11,6 +11,7 @@ import "./vendor/bootstrap-select/dist/css/bootstrap-select.min.css";
 import "./css/style.css";
 import "./jsx/css/Theme.css";
 import '../node_modules/rsuite/dist/rsuite.min.css';
+import "react-phone-input-2/lib/bootstrap.css";
 const SignUp = lazy(() => import('./jsx/pages/Registration'));
 const ForgotPassword = lazy(() => import('./jsx/pages/ForgotPassword'));
 const Login = lazy(() => {

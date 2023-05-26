@@ -8,21 +8,12 @@ import { toast, ToastContainer } from "react-toastify";
 import { MultiSelect } from "./MultiSelect";
 import crossIcon from "../../images/FAB.svg";
 import {
+  getNotification,
   getUsers,
   pushNotification,
 } from "../../services/Notification/NotificationService";
 import Spinner from "../common/Spinner";
 export default function Notification(props) {
-  const [loader, setLoader] = useState(false);
-  const [data, setData] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [search, setSearch] = useState("");
-  const limit = 10;
-  const [dealSoled, setDealSoled] = useState("");
-  const [type, setType] = useState("all");
-  console.log(type);
-
   const notifyTopRight = (success) => {
     toast.success(`✅ ${success}`, {
       position: "top-right",
@@ -44,7 +35,17 @@ export default function Notification(props) {
       progress: undefined,
     });
   };
-
+  const [loader, setLoader] = useState(false);
+  const [data, setData] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState("");
+  const limit = 10;
+  const [dealSoled, setDealSoled] = useState("");
+  const [notification, setNotification] = useState([]);
+  const [type, setType] = useState("all");
+  const [notificationType,setNotificationType] = useState("user");
+  console.log(type);
   const [apiError, setApiError] = useState();
   let errorsObj = { title: "", body: "", type: "", selected: [] };
   const [errors, setErrors] = useState(errorsObj);
@@ -67,6 +68,24 @@ export default function Notification(props) {
     console.log(item?.value, "id...............");
     return item?.value;
   });
+
+  function getNotificationData() {
+    setLoader(true);
+    getNotification(notificationType)
+      .then((response) => {
+        console.log(response.data.data.notification);
+        setNotification(response.data.data.notification);
+        setLoader(false);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+        setLoader(false);
+        // if (error.response.data.statusCode === 401) {
+        //   localStorage.clear("tokenDetails");
+        //   props.history.push("/login");
+        // }
+      });
+  }
 
   function onSubmit(e) {
     setLoader(true);
@@ -128,6 +147,9 @@ export default function Notification(props) {
           props.history.push("/login");
         }
       });
+
+
+      getNotificationData();
   }, []);
   return (
     <div>
@@ -160,19 +182,24 @@ export default function Notification(props) {
           <Tab.Content className="pt-4">
             <Tab.Pane eventKey="home">
               <Col>
-                <Card>
+              {notification?.map((item,i)=>(
+                <Card key={i}>
                   <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center">
+                    {/* {notification?.map((item,i)=>( */}
+                      <div className="d-flex justify-content-between align-items-center">
                       <div>
-                        <h3>New User Resisterd!</h3>
-                        <p>Description: Ram Resisterd on 07/05/2023.</p>
+                        <h3 className="text-success">New User Resisterd!</h3>
+                        <p className="fs-14">Description:<b>{item.userId.fName}</b> Resisterd on {moment(item.createdAt).format('DD/MM/YYYY')}.</p>
                       </div>
                       <div>
                         <img src={crossIcon} width={40} />
                       </div>
                     </div>
+                    {/* ))} */}
+                    
                   </Card.Body>
                 </Card>
+                 ))}
               </Col>
             </Tab.Pane>
           </Tab.Content>

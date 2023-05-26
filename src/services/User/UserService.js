@@ -5,6 +5,7 @@ import {
   DELETE_USERS,
   GET_USERS,
   GET_USER_DETAILS,
+  POST_USER_DETAILS,
   VERIFY_USER_DETAILS,
 } from "./UserApiEndPoints";
 export function getAllUsers(currentPage, limit, search) {
@@ -13,9 +14,12 @@ export function getAllUsers(currentPage, limit, search) {
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
-  return instance.get(GET_USERS + `?page=${currentPage}&limit=${limit}&search=${search}`, {
-    headers: myHeaders,
-  });
+  return instance.get(
+    GET_USERS + `?page=${currentPage}&limit=${limit}&search=${search}`,
+    {
+      headers: myHeaders,
+    }
+  );
 }
 
 export function deleteUser(id) {
@@ -40,28 +44,58 @@ export function blockUser(id) {
   });
 }
 
-//user details
-
-// export function getOneUser(userId) {
-//   const data = localStorage.getItem("token");
-//   const myHeaders = {
-//     Authorization: `Bearer ${data}`,
-//   };
-//   return instance.get(GET_USER_DETAILS + `?userId=${userId}`, {
-//     headers: myHeaders,
-//   });
-// }
-
 export function approveUser(userId) {
   const postData = {
     userId,
-    
   };
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
   return instance.post(APPROVE_USER_DETAILS, postData, {
+    headers: myHeaders,
+  });
+}
+export function postUser(
+  responseImage,
+  fname,
+  lname,
+  email,
+  dob,
+  phNumber,
+  typeOfTrainerSelected,
+  locationSelected,
+  servicesSelected,
+  years,
+  clients,
+  noOfCertificate,
+  certificateImage,
+  password,
+  countryCode
+) {
+  const postData = {
+    profile:responseImage,
+   fName:fname,
+    lName:lname,
+    email,
+    dob,
+    phone:phNumber,
+    typeOfTrainer:typeOfTrainerSelected,
+    trainningLocation:locationSelected,
+    services:servicesSelected,
+    years,
+    clients,
+    noOfCertificate,
+    fitnessCertificate:certificateImage,
+    password,
+    countryCode,
+  };
+  const data = localStorage.getItem("tokenDetails");
+  const myHeaders = {
+    Authorization: `Bearer ${data}`,
+  };
+
+  return instance.post(POST_USER_DETAILS, postData, {
     headers: myHeaders,
   });
 }

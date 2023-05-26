@@ -53,6 +53,32 @@ export default function Articals(props) {
   const [search, setSearch] = useState("");
 
   const limit = 10;
+
+
+  function MyComponent(content) {
+    const htmlContent = content;
+    const maxCharacters = 200; // Maximum number of characters to display
+
+    // Create a temporary container to parse the HTML content
+    const container = document.createElement("div");
+    container.innerHTML = htmlContent;
+
+    // Get the text content of the container
+    const textContent = container.textContent || container.innerText;
+
+    // Apply the character limit to the text content
+    var slicedContent = textContent.slice(0, maxCharacters);
+
+    // Check if the sliced content is shorter than the text content
+    const displayContent =
+      slicedContent.length < textContent.length
+        ? { slicedContent }
+        : htmlContent;
+    console.log(displayContent, "hello");
+    return (
+      <div dangerouslySetInnerHTML={{ __html: displayContent.slicedContent }} />
+    );
+  }
   function getTableData() {
     setLoader(true);
     getArticle(currentPage, limit, search)
@@ -208,7 +234,7 @@ export default function Articals(props) {
                     </td>
                     <td>{item.title}</td>
                     <td>{item.category}</td>
-                    <td>{item.description}</td>
+                    <td>{MyComponent(item.description)}</td>
                     <td>
                       {item.isDisable ? (
                         <Badge variant="danger light">Deactive</Badge>

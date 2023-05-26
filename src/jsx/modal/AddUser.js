@@ -3,6 +3,9 @@ import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { uploadFile } from "react-s3";
 import { MultiSelect } from "../pages/MultiSelect";
+import { postUser } from "../../services/User/UserService";
+import PhoneInput from "react-phone-input-2";
+import Select from "react-select";
 export default function AddUser({ show, table, onHide }) {
   const config = {
     bucketName: "traintab",
@@ -11,25 +14,27 @@ export default function AddUser({ show, table, onHide }) {
     secretAccessKey: "RFkTiuG4/SYCUXVT5VgqZqq9eHX8Ll6BJ9jH58ua",
   };
   let responseImage = {};
+  let certificateImage = {};
   const [loader, setLoader] = useState(false);
   const [image, setImage] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
-  const [address, setAddress] = useState("");
+  // const [address, setAddress] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [phNumber, setPhNumber] = useState("");
   const [typeOfTrainer, setTypeOfTrainer] = useState([]);
   const [trainingLocation, setTrainingLocation] = useState([]);
   const [services, setServices] = useState([]);
-  const [years, setYears] = useState([]);
-  const [clients, setClients] = useState([]);
+  const [years, setYears] = useState("");
+  const [clients, setClients] = useState("");
   const [noOfCertificate, setNoOfCertificate] = useState("");
   const [certificate, setCertificate] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
   const [apiError, setApiError] = useState("");
-  
+
   let errorsObj = {
     image: "",
     fname: "",
@@ -51,7 +56,7 @@ export default function AddUser({ show, table, onHide }) {
   const [errors, setErrors] = useState(errorsObj);
 
   const options = [
-    { value: "Personal Trainer",label: "Personal Trainer",},
+    { value: "Personal Trainer", label: "Personal Trainer" },
     { value: "Group Fitness Instructor", label: "Group Fitness Instructor" },
     { value: "Sports Coach ", label: "Sports Coach " },
     { value: "Lifestyle Coach", label: "Lifestyle Coach" },
@@ -59,7 +64,7 @@ export default function AddUser({ show, table, onHide }) {
     { value: "Bodybuilding Coach", label: "Bodybuilding Coach" },
   ];
   const locationOptions = [
-    { value: "Outdoor/Park",label: "Outdoor/Park",},
+    { value: "Outdoor/Park", label: "Outdoor/Park" },
     { value: "Gym Owner", label: "Gym Owner" },
     { value: "Boutique Gym", label: "Boutique Gym" },
     { value: "University", label: "University" },
@@ -67,28 +72,34 @@ export default function AddUser({ show, table, onHide }) {
     { value: "Personal Training Gym", label: "Personal Training Gym" },
   ];
   const serviceOptions = [
-    { value: "In Person",label: "In Person",},
+    { value: "In Person", label: "In Person" },
     { value: "Virtual", label: "Virtual" },
     { value: "1-0n-1 Personal Training ", label: "1-0n-1 Personal Training " },
     { value: "Partner Personal Training", label: "Partner Personal Training" },
     { value: "Group Training", label: "Group Training" },
-    { value: "Educational Classes/Seminars", label: "Educational Classes/Seminars" },
+    {
+      value: "Educational Classes/Seminars",
+      label: "Educational Classes/Seminars",
+    },
   ];
-  const yearsOptions = [
-    { value: "0-1",label: "0-1",},
-    { value: "1-3", label: "1-3" },
-    { value: "3-5", label: "3-5" },
-    { value: "5-10", label: "5-10" },
-    { value: "10+", label: "10+" },
-    
-  ];
-  const clientOptions = [
-    { value: "0-10",label: "0-10",},
-    { value: "11-25", label: "11-25" },
-    { value: "26-40", label: "26-40" },
-    { value: "41-60", label: "41-60" },
-    { value: "61+", label: "61+" },
-  ];
+
+
+  const totalIds = [...typeOfTrainer];
+  const typeOfTrainerSelected = totalIds?.map((item, i) => {
+    console.log(item?.value, "id...............");
+    return item?.value;
+  });
+  const location = [...trainingLocation];
+  const locationSelected = location?.map((item, i) => {
+    console.log(item?.value, "id...............");
+    return item?.value;
+  });
+  const service = [...services];
+  const servicesSelected = service?.map((item, i) => {
+    console.log(item?.value, "id...............");
+    return item?.value;
+  });
+
   const notifyTopRight = () => {
     toast.success(`✅ Created Successfully.`, {
       position: "top-right",
@@ -139,10 +150,10 @@ export default function AddUser({ show, table, onHide }) {
       error = true;
     }
 
-    if (address === "") {
-      errorObj.address = "This Field is Required !";
-      error = true;
-    }
+    // if (address === "") {
+    //   errorObj.address = "This Field is Required !";
+    //   error = true;
+    // }
     if (phNumber === "") {
       errorObj.phNumber = "Image is Required !";
       error = true;
@@ -186,35 +197,72 @@ export default function AddUser({ show, table, onHide }) {
       errorObj.verifyPassword = "This Field is Required !";
       error = true;
     }
+    if (password.length < 6) {
+      errorObj.password = "Password length must be at least 6 characters long!";
+      error = true;
+    }
+    if (password.length > 15) {
+      errorObj.password =
+        "Password length must be less than or equal to 15 characters long!";
+      error = true;
+    }
+
+    if (password !== verifyPassword) {
+      errorObj.verifyPassword = "Password is not matched";
+      error = true;
+    }
     setErrors(errorObj);
     if (error) {
       return;
     }
     const file = new File([image], new Date().getTime());
-    console.log(file, "after file creation");
+   
+    // console.log(file, "after file creation");
     if (file.size > 0) {
       responseImage = await uploadFile(file, config);
       console.log(responseImage, "after upload");
     }
-
-    // postArticle(responseImage.location, title, category, description)
-    //   .then((response) => {
-    //     console.log(response, "vgvfdfhjvhfvhg");
-    //     setLoader(false);
-    //     notifyTopRight("");
-    //     setImage("");
-    //     setTitle("");
-    //     setCategory("");
-    //     setDescription("");
-    //     onHide();
-    //     table();
-    //   })
-    //   .catch((error) => {
-    //     setLoader(false);
-    //     // notifyError(error.response.data.message);
-    //     console.log(error.response, "error");
-    //     setApiError(error.response.data.data);
-    //   });
+    const certificatefile = new File([image], new Date().getTime());
+    if (certificatefile.size > 0) {
+      certificateImage = await uploadFile(certificatefile, config);
+      console.log(responseImage, "after certificate upload");
+    }
+    setLoader(true);
+    postUser(
+      responseImage.location,
+      fname,
+      lname,
+      email,
+      dob,
+      phNumber,
+      typeOfTrainerSelected,
+      locationSelected,
+      servicesSelected,
+      years,
+      clients,
+      noOfCertificate,
+      certificateImage.location,
+      password,
+      countryCode
+    )
+      .then((response) => {
+        console.log(response, "vgvfdfhjvhfvhg");
+        setLoader(false);
+        notifyTopRight("");
+        setImage("");
+        setTypeOfTrainer([]);
+        setTrainingLocation([]);
+        setServices([]);
+        setPassword("");
+        onHide();
+        table();
+      })
+      .catch((error) => {
+        setLoader(false);
+        // notifyError(error.response.data.message);
+        console.log(error.response, "error");
+        setApiError(error.response.data.data);
+      });
   }
   return (
     <Modal className="modal fade" show={show} centered>
@@ -303,7 +351,7 @@ export default function AddUser({ show, table, onHide }) {
                     </label>
                     <div className="contact-name">
                       <input
-                        type="text"
+                        type="date"
                         className="form-control"
                         required="required"
                         onChange={(e) => setDob(e.target.value)}
@@ -316,7 +364,13 @@ export default function AddUser({ show, table, onHide }) {
                   </div>
                   <div className="form-group">
                     <label className="text-black font-w500">Phone Number</label>
-                    <div className="contact-name">
+                    <div className="contact-name d-flex">
+                      <PhoneInput
+                        country={"eg"}
+                        enableSearch={true}
+                        value={countryCode}
+                        onChange={(phone) => setCountryCode(phone)}
+                      />
                       <input
                         type="number"
                         className="form-control"
@@ -330,7 +384,7 @@ export default function AddUser({ show, table, onHide }) {
                       <div className="text-danger fs-12">{errors.phNumber}</div>
                     )}
                   </div>
-                  <div className="form-group">
+                  {/* <div className="form-group">
                     <label className="text-black font-w500">Address</label>
                     <div className="contact-name">
                       <input
@@ -345,7 +399,7 @@ export default function AddUser({ show, table, onHide }) {
                     {errors.address && (
                       <div className="text-danger fs-12">{errors.address}</div>
                     )}
-                  </div>
+                  </div> */}
                   <div className="form-group">
                     <label className="text-black font-w500">
                       Type Of Trainer
@@ -357,7 +411,7 @@ export default function AddUser({ show, table, onHide }) {
                       onChange={setTypeOfTrainer}
                       required
                     />
-                   
+
                     {errors.typeOfTrainer && (
                       <div className="text-danger fs-12">
                         {errors.typeOfTrainer}
@@ -369,14 +423,13 @@ export default function AddUser({ show, table, onHide }) {
                       Training Location
                     </label>
                     <div className="contact-name">
-                    <MultiSelect
-                      className="form-control"
-                      options={locationOptions}
-                      value={trainingLocation}
-                      onChange={setTrainingLocation}
-                      required
-                    />
-                     
+                      <MultiSelect
+                        className="form-control"
+                        options={locationOptions}
+                        value={trainingLocation}
+                        onChange={setTrainingLocation}
+                        required
+                      />
                     </div>
                     {errors.trainingLocation && (
                       <div className="text-danger fs-12">
@@ -387,14 +440,13 @@ export default function AddUser({ show, table, onHide }) {
                   <div className="form-group">
                     <label className="text-black font-w500">Services</label>
                     <div className="contact-name">
-                    <MultiSelect
-                      className="form-control"
-                      options={serviceOptions}
-                      value={services}
-                      onChange={setServices}
-                      required
-                    />
-                     
+                      <MultiSelect
+                        className="form-control"
+                        options={serviceOptions}
+                        value={services}
+                        onChange={setServices}
+                        required
+                      />
                     </div>
                     {errors.services && (
                       <div className="text-danger fs-12">{errors.services}</div>
@@ -405,13 +457,18 @@ export default function AddUser({ show, table, onHide }) {
                       Years In Business
                     </label>
                     <div className="contact-name">
-                    <MultiSelect
-                      className="form-control"
-                      options={yearsOptions}
-                      value={years}
-                      onChange={setYears}
-                      required
-                    />
+                      <select
+                        className="form-control"
+                        onChange={(e) => setYears(e.target.value)}
+                        required
+                      >
+                        <option hidden>Select..</option>
+                        <option value="0-1">0-1</option>
+                        <option value="1-3">1-3</option>
+                        <option value="3-5">3-5</option>
+                        <option value="5-10">5-10</option>
+                        <option value="10+">10+</option>
+                      </select>
                     </div>
                     {errors.years && (
                       <div className="text-danger fs-12">{errors.years}</div>
@@ -420,13 +477,18 @@ export default function AddUser({ show, table, onHide }) {
                   <div className="form-group">
                     <label className="text-black font-w500">Clients</label>
                     <div className="contact-name">
-                    <MultiSelect
-                      className="form-control"
-                      options={clientOptions}
-                      value={clients}
-                      onChange={setClients}
-                      required
-                    />
+                      <select
+                        className="form-control"
+                        onChange={(e) => setClients(e.target.value)}
+                        required
+                      >
+                        <option hidden>Select..</option>
+                        <option value="0-10">0-10</option>
+                        <option value="11-25">11-25</option>
+                        <option value="26-40">26-40</option>
+                        <option value="41-60">41-60</option>
+                        <option value="61+">61+</option>
+                      </select>
                     </div>
                     {errors.clients && (
                       <div className="text-danger fs-12">{errors.clients}</div>
@@ -476,7 +538,7 @@ export default function AddUser({ show, table, onHide }) {
                     <label className="text-black font-w500">Password</label>
                     <div className="contact-name">
                       <input
-                        type="text"
+                        type="Password"
                         className="form-control"
                         name="Date_Join"
                         required="required"
@@ -494,7 +556,7 @@ export default function AddUser({ show, table, onHide }) {
                     </label>
                     <div className="contact-name">
                       <input
-                        type="text"
+                        type="Password"
                         className="form-control"
                         name="Date_Join"
                         required="required"

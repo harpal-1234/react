@@ -2,15 +2,15 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import dummyImage from "../../images/1.jpg"
 import { saveAs } from 'file-saver'
-export default function ViewImage({ show,image, onHide, table }) {
-
+export default function ViewImage({ show,image, onHide, }) {
+console.log(image,"image")
   const downloadImage = () => {
-    saveAs(dummyImage, 'image.jpg') // Put your image url here.
+    saveAs(image, 'image.jpg') // Put your image url here.
   }
   return (
     <Modal className="modal fade" show={show} centered>
         <div className='w-100'>
-        <img src={dummyImage}  style={{width:"inherit"}}/>
+        <img src={image?image:dummyImage}  style={{width:"inherit"}}/>
         <div className="modal-footer">
               <button
                 type="submit"

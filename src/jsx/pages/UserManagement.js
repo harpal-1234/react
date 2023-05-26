@@ -67,7 +67,7 @@ export default function UserManagement(props) {
       .then((response) => {
         console.log(response.data.data.Users);
         setUsers(response.data.data.Users);
-        setImage(response.data.data.Users.fitnessCertificate);
+        setImage(response.data.data.Users?.fitnessCertificate);
         const total = response.data.data.countUser;
         setLoader(false);
         setPageCount(Math.ceil(total / limit));
@@ -338,7 +338,6 @@ export default function UserManagement(props) {
       </Col>
       <ViewImage
         show={modal}
-        table={getTableData}
         image={image}
         onHide={() => setModal(false)}
       />
