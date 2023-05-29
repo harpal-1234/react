@@ -7,7 +7,7 @@ import {
 } from "../../store/actions/AuthActions";
 
 import logo from "../../images/logo.png";
-import logotext from "../../images/Group 4174.svg";
+import logotext from "../../images/Group 626086.svg";
 import { login, saveTokenInLocalStorage } from "../../services/AuthService";
 
 function Login(props) {

@@ -6,13 +6,13 @@ import {
   POST_ARTICLE,
 } from "./ArticleEndPoints";
 
-export function getArticle(currentPage, limit, search) {
+export function getArticle(currentPage, limit, search,filterType) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
   return instance.get(
-    GET_ARTICLES + `?page=${currentPage}&limit=${limit}&search=${search}`,
+    GET_ARTICLES + `?page=${currentPage}&limit=${limit}&search=${search}&articleType=${filterType}`,
     {
       headers: myHeaders,
     }
@@ -46,7 +46,7 @@ export function actionArticle(id) {
   });
 }
 
-export function postArticle(responseImage, title, category, description) {
+export function postArticle(responseImage, title, category, description,type,tag) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -54,18 +54,20 @@ export function postArticle(responseImage, title, category, description) {
     
     Authorization: `Bearer ${data}`,
   };
-  // const postData = {
-  //   image: "responseImage",
-  //   title,
-  //   category,
-  //   description,
-  // };
+  const postData = {
+    image: responseImage,
+    title,
+    category,
+    description,
+    articleType:type,
+    subCategory:tag
+  };
   var formdata = new FormData();
 formdata.append("title", title);
 formdata.append("description", description);
 formdata.append("category", category);
 formdata.append("image", responseImage);
-  return instance.post(POST_ARTICLE, formdata, {
+  return instance.post(POST_ARTICLE, postData, {
     headers: myHeaders,
   }
   ,);

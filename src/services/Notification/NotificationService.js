@@ -30,13 +30,13 @@ export function pushNotification(title, body, ids) {
   });
 }
 
-export function getNotification(notificationType) {
+export function getNotification(currentPage, limit) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
 
-  return instance.get(GET_NOTIFICATION +`?type=${notificationType}`, {
+  return instance.get(GET_NOTIFICATION +`?page=${currentPage}&limit=${limit}`, {
     headers: myHeaders,
   });
 }

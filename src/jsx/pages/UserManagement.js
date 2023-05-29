@@ -25,7 +25,7 @@ export default function UserManagement(props) {
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(false);
   const [userModal, setUserModal] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState([]);
   const limit = 10;
   const imgUrl = "https://traintab.s3.amazonaws.com/";
   const svg1 = (
@@ -67,9 +67,9 @@ export default function UserManagement(props) {
       .then((response) => {
         console.log(response.data.data.Users);
         setUsers(response.data.data.Users);
-        setImage(response.data.data.Users?.fitnessCertificate);
-        const total = response.data.data.countUser;
+        // setImage(response.data.data.Users?.fitnessCertificate);
         setLoader(false);
+        const total = response.data.data.countUser;
         setPageCount(Math.ceil(total / limit));
       })
       .catch((error) => {
@@ -263,23 +263,23 @@ export default function UserManagement(props) {
                     <td>{item.email}</td>
                     <td>{item.phone}</td>
                     <td>{item.typeOfTrainer}</td>
-                    <td>
+                    <td className="text-center">
                       <button
                         type="button"
-                        className="btn btn-info py-2"
-                        onClick={() => setModal(true)}
+                        className="btn btn-info py-2 fs-12"
+                        onClick={() => (setModal(true),setImage(item.fitnessCertificate))}
                       >
                         View
                       </button>
                     </td>
-                    <td>
+                    <td className="text-center">
                       {item.isApproved ? (
                         <Badge variant="success light">Approved</Badge>
                       ) : (
                         <Badge variant="danger light">Pending</Badge>
                       )}
                     </td>
-                    <td>
+                    <td className="text-center">
                       {item.isBlocked ? (
                         <Badge variant="danger light">Deactive</Badge>
                       ) : (

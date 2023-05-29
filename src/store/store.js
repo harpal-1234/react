@@ -6,6 +6,7 @@ import { AuthReducer } from './reducers/AuthReducer';
 import todoReducers from './reducers/Reducers';
 import { reducer as reduxFormReducer } from 'redux-form';
 import UserDetailsReducer from './reducers/UserDetailsReducers';
+import ArticleDetailsReducer from './reducers/ArticleDetailsReducer';
 
 const middleware = applyMiddleware(thunk);
 
@@ -18,6 +19,7 @@ const reducers = combineReducers({
 		todoReducers,
 	form: reduxFormReducer,	
 	UserData: UserDetailsReducer,
+    ArticleData: ArticleDetailsReducer,
 });
 
 //const store = createStore(rootReducers);

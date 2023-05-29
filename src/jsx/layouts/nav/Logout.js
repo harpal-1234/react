@@ -17,7 +17,7 @@ function LogoutPage(props) {
         console.log(res);
         localStorage.removeItem("tokenDetails");
 
-        props.history.push("/login");
+        props.history.push("/");
         console.log("Logout succussfully!");
       })
       .catch(() => {

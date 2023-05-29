@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Badge, Button, Card, Col, Dropdown, Table } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import {
@@ -7,11 +8,12 @@ import {
   deleteArticle,
   getArticle,
 } from "../../services/ArticleService/ArticleService";
+import { setCurrentArticleAction } from "../../store/actions/ArticleDetailsAction";
 import Pagination from "../common/Pagination";
 import Spinner from "../common/Spinner";
 import PageTitle from "../layouts/PageTitle";
 import AddArtical from "../modal/AddArtical";
-
+import parse from "html-react-parser";
 export default function Articals(props) {
   const svg1 = (
     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
@@ -50,14 +52,13 @@ export default function Articals(props) {
   const [apiError, setApiError] = useState("");
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [filterType, setFilterType] = useState("Default");
   const [search, setSearch] = useState("");
-
   const limit = 10;
-
-
+  const dispatch = useDispatch();
   function MyComponent(content) {
     const htmlContent = content;
-    const maxCharacters = 200; // Maximum number of characters to display
+    const maxCharacters = 100; // Maximum number of characters to display
 
     // Create a temporary container to parse the HTML content
     const container = document.createElement("div");
@@ -76,12 +77,16 @@ export default function Articals(props) {
         : htmlContent;
     console.log(displayContent, "hello");
     return (
-      <div dangerouslySetInnerHTML={{ __html: displayContent.slicedContent }} />
+      <div
+        dangerouslySetInnerHTML={{
+          __html: displayContent.slicedContent + "...",
+        }}
+      />
     );
   }
   function getTableData() {
     setLoader(true);
-    getArticle(currentPage, limit, search)
+    getArticle(currentPage, limit, search, filterType)
       .then((response) => {
         setArticles(response.data.data.Articles);
         const total = response.data.data.countArticles;
@@ -141,7 +146,7 @@ export default function Articals(props) {
   useEffect(() => {
     getTableData();
     console.log(currentPage, " new 111");
-  }, [currentPage, search]);
+  }, [currentPage, search, filterType]);
   return (
     <div>
       <ToastContainer
@@ -155,7 +160,7 @@ export default function Articals(props) {
         draggable
         pauseOnHover
       />
-      <PageTitle activeMenu="Artical List" motherMenu="Artical" />
+      <PageTitle activeMenu="Article List" motherMenu="Article" />
 
       <Col>
         <Card>
@@ -193,6 +198,25 @@ export default function Articals(props) {
                 </div>
               </div>
               <div className="d-flex justify-content-end mb-3">
+                <div>
+                  <label className="fs-18 text-black pr-2">Filter:</label>
+                  <select
+                    style={{
+                      color: "#7e7e7e",
+                      padding: " 10px",
+                      borderColor: "lightgrey",
+                      borderRadius: "6px",
+                    }}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    required
+                  >
+                    <option>Default</option>
+                    <option value="Program">Program</option>
+                    <option value="Tips">Tips</option>
+                  </select>
+                </div>
+              </div>
+              <div className="d-flex justify-content-end mb-3">
                 <Button
                   className="btn btn-primary"
                   onClick={() => setPostModal(true)}
@@ -216,6 +240,9 @@ export default function Articals(props) {
                     <strong>CATEGORY</strong>
                   </th>
                   <th>
+                    <strong>TAG</strong>
+                  </th>
+                  <th>
                     <strong>DESCRIPTION</strong>
                   </th>
                   <th>
@@ -227,15 +254,62 @@ export default function Articals(props) {
                 </tr>
               </thead>
               <tbody>
-                {articles.map((item,i) => (
+                {articles.map((item, i) => (
                   <tr key={i}>
-                    <td>
-                      <img src={item.profile} width={70} height={70} />
+                    <td
+                      onClick={() => (
+                        dispatch(setCurrentArticleAction(item)),
+                        props.history.push("/article-details")
+                      )}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <img src={item.image} width={70} height={70} />
                     </td>
-                    <td>{item.title}</td>
-                    <td>{item.category}</td>
-                    <td>{MyComponent(item.description)}</td>
-                    <td>
+                    <td
+                      onClick={() => (
+                        dispatch(setCurrentArticleAction(item)),
+                        props.history.push("/article-details")
+                      )}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {item.title}
+                    </td>
+                    <td
+                      onClick={() => (
+                        dispatch(setCurrentArticleAction(item)),
+                        props.history.push("/article-details")
+                      )}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {item.category}
+                    </td>
+                    <td
+                      onClick={() => (
+                        dispatch(setCurrentArticleAction(item)),
+                        props.history.push("/article-details")
+                      )}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {item.subCategory}
+                    </td>
+                    <td
+                      onClick={() => (
+                        dispatch(setCurrentArticleAction(item)),
+                        props.history.push("/article-details")
+                      )}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {item.description.length > 50
+                        ? MyComponent(item.description)
+                        : parse(item.description)}
+                    </td>
+                    <td
+                      onClick={() => (
+                        dispatch(setCurrentArticleAction(item)),
+                        props.history.push("/article-details")
+                      )}
+                      style={{ cursor: "pointer" }}
+                    >
                       {item.isDisable ? (
                         <Badge variant="danger light">Deactive</Badge>
                       ) : (

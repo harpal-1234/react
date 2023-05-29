@@ -13,6 +13,10 @@ import {
   pushNotification,
 } from "../../services/Notification/NotificationService";
 import Spinner from "../common/Spinner";
+import { approveUser } from "../../services/User/UserService";
+import Pagination from "../common/Pagination";
+import { setCurrentUserAction } from "../../store/actions/UserDetailsAction";
+import { useDispatch } from "react-redux";
 export default function Notification(props) {
   const notifyTopRight = (success) => {
     toast.success(`✅ ${success}`, {
@@ -35,23 +39,19 @@ export default function Notification(props) {
       progress: undefined,
     });
   };
+  const dispatch = useDispatch();
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState("");
   const limit = 10;
-  const [dealSoled, setDealSoled] = useState("");
   const [notification, setNotification] = useState([]);
   const [type, setType] = useState("all");
-  const [notificationType,setNotificationType] = useState("user");
-  console.log(type);
-  const [apiError, setApiError] = useState();
   let errorsObj = { title: "", body: "", type: "", selected: [] };
   const [errors, setErrors] = useState(errorsObj);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  // const [type, setType] = useState("");
   const [selected, setSelected] = useState([]);
 
   const [userList, setUserList] = useState([]);
@@ -71,24 +71,45 @@ export default function Notification(props) {
 
   function getNotificationData() {
     setLoader(true);
-    getNotification(notificationType)
+    getNotification(currentPage, limit)
       .then((response) => {
         console.log(response.data.data.notification);
         setNotification(response.data.data.notification);
         setLoader(false);
+        const total = response.data.data.countNotification;
+        setPageCount(Math.ceil(total / limit));
       })
       .catch((error) => {
         console.log(error, "error");
+        notifyError(error.response.data.message);
         setLoader(false);
-        // if (error.response.data.statusCode === 401) {
-        //   localStorage.clear("tokenDetails");
-        //   props.history.push("/login");
-        // }
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("tokenDetails");
+          props.history.push("/login");
+        }
       });
   }
-
-  function onSubmit(e) {
+  function onApprove(id) {
     setLoader(true);
+    approveUser(id)
+      .then((response) => {
+        notifyTopRight("Approved successfully.");
+        getNotificationData();
+        setLoader(false);
+
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError("Something went wrong!");
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  function onSubmit(e) {
     e.preventDefault();
     let error = false;
     const errorObj = { ...errorsObj };
@@ -112,7 +133,7 @@ export default function Notification(props) {
     if (error) {
       return;
     }
-
+    setLoader(true);
     pushNotification(title, body, ids)
       .then(() => {
         notifyTopRight("Sent Successfully.");
@@ -148,9 +169,8 @@ export default function Notification(props) {
         }
       });
 
-
-      getNotificationData();
-  }, []);
+    getNotificationData();
+  }, [currentPage]);
   return (
     <div>
       <ToastContainer
@@ -182,24 +202,54 @@ export default function Notification(props) {
           <Tab.Content className="pt-4">
             <Tab.Pane eventKey="home">
               <Col>
-              {notification?.map((item,i)=>(
-                <Card key={i}>
-                  <Card.Body>
-                    {/* {notification?.map((item,i)=>( */}
+                {notification?.map((item, i) => (
+                  <Card key={i}>
+                    <Card.Body>
                       <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h3 className="text-success">New User Resisterd!</h3>
-                        <p className="fs-14">Description:<b>{item.userId.fName}</b> Resisterd on {moment(item.createdAt).format('DD/MM/YYYY')}.</p>
+                        <div>
+                          <h3 className="text-muted">New User Resisterd!</h3>
+                          <p className="fs-14">
+                            Description:{" "}
+                            <span
+                              // onClick={() => (
+                              //   dispatch(setCurrentUserAction(item)),
+                              //   props.history.push("/user-details")
+                              // )}
+                            >
+                              <b className="text-primary">{item.userName}</b>
+                            </span>
+                            Resisterd on{" "}
+                            {moment(item.createdAt).format("DD/MM/YYYY")}.
+                          </p>
+                        </div>
+                        <div className="d-flex" style={{ gap: "1.5rem" }}>
+                          {/* <img src={crossIcon} width={40} /> */}
+                          <button
+                            className="btn btn-success fs-12 py-2"
+                            onClick={() => onApprove(item.userId._id)}
+                          >
+                            Approve
+                          </button>
+                          <button className="btn btn-danger fs-12 py-2">
+                            Reject
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <img src={crossIcon} width={40} />
-                      </div>
-                    </div>
-                    {/* ))} */}
-                    
-                  </Card.Body>
-                </Card>
-                 ))}
+                    </Card.Body>
+                  </Card>
+                ))}
+                {notification?.length === 0 && !loader ? (
+                  <div className="justify-content-center d-flex my-5 ">
+                    Sorry, Data Not Found!
+                  </div>
+                ) : (
+                  ""
+                )}
+                <Pagination
+                  pageCount={pageCount}
+                  pageValue={currentPage}
+                  setPage={setCurrentPage}
+                />
               </Col>
             </Tab.Pane>
           </Tab.Content>
@@ -210,14 +260,7 @@ export default function Notification(props) {
                   <div className="mb-4">
                     <h3 className="mb-1 font-w600 text-black ">Add Details</h3>
                   </div>
-                  {apiError && (
-                    <div
-                      role="alert"
-                      className="fade alert-dismissible fade show alert alert-danger show"
-                    >
-                      {apiError}
-                    </div>
-                  )}
+
                   <form onSubmit={onSubmit}>
                     <div className="form-group">
                       <label className="mb-2 ">

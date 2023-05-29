@@ -65,7 +65,7 @@ class SideBar extends Component {
         "user-management"
       ],
       artical = [
-        "artical-management",
+        "article-management",
         "advertise-management"
       ],
       reports = [
@@ -247,11 +247,11 @@ class SideBar extends Component {
               <ul>
                 <li>
                   <Link
-                    className={`${path === "artical-management" ? "mm-active" : ""}`}
+                    className={`${path === "article-management" ? "mm-active" : ""}`}
                     onClick={() => this.props.onClick()}
-                    to="/artical-management"
+                    to="/article-management"
                   >
-                    Artical Management
+                    Article Management
                   </Link>
                 </li>
                 <li>

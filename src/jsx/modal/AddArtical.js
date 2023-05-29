@@ -18,9 +18,11 @@ export default function AddArtical({ show, onHide, table }) {
   };
   let responseImage = {};
   const [loader, setLoader] = useState(false);
+  const [type, setType] = useState("");
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [tag, setTag] = useState("");
   const [description, setDescription] = useState("");
   const [apiError, setApiError] = useState("");
 
@@ -61,10 +63,14 @@ export default function AddArtical({ show, onHide, table }) {
 
     let error = false;
     const errorObj = { ...errorsObj };
-    // if (image === "") {
-    //   errorObj.image = "Image is Required !";
-    //   error = true;
-    // }
+    if (type === "") {
+      errorObj.type = "Image is Required !";
+      error = true;
+    }
+    if (image === "") {
+      errorObj.image = "Image is Required !";
+      error = true;
+    }
     if (title === "") {
       errorObj.title = "Title is Required !";
       error = true;
@@ -87,11 +93,12 @@ export default function AddArtical({ show, onHide, table }) {
     // console.log(responseImage, "after upload");
     // }
 
-    postArticle(responseImage.location, title, category, description)
+    postArticle(responseImage.location, title, category, description,type,tag)
       .then((response) => {
         console.log(response, "vgvfdfhjvhfvhg");
         setLoader(false);
         notifyTopRight("");
+        setType("");
         setImage("");
         setTitle("");
         setCategory("");
@@ -107,11 +114,11 @@ export default function AddArtical({ show, onHide, table }) {
       });
   }
   return (
-    <Modal className="modal fade" show={show} centered>
+    <Modal className="modal fade" show={show} centered size="lg" >
       <div className="">
         <form>
           <div className="modal-header">
-            <h4 className="modal-title fs-20">Add Artical Details</h4>
+            <h4 className="modal-title fs-20">Add Article Details</h4>
             <button
               type="button"
               className="btn close"
@@ -127,17 +134,15 @@ export default function AddArtical({ show, onHide, table }) {
                 <div className="form-group mb-3">
                   <label className="text-black font-w500">Article Type</label>
                   <div className="contact-name">
-                    <select
-                    className="form-control"
-                    
-                    >
+                    <select className="form-control"   value={type}
+                      onChange={(e) => setType(e.target.value)}>
                       <option hidden>Select..</option>
                       <option>Program</option>
                       <option>Tips</option>
                     </select>
-                    {/* {errors.title && (
-                      <div className="text-danger fs-12">{errors.title}</div>
-                    )} */}
+                    {errors.type && (
+                      <div className="text-danger fs-12">{errors.type}</div>
+                    )}
                   </div>
                 </div>
                 <div className="form-group mb-3">
@@ -178,8 +183,9 @@ export default function AddArtical({ show, onHide, table }) {
                   <label className="text-black font-w500">Category</label>
                   <div className="contact-name">
                     <select
-                    className="form-control"
-                    
+                      className="form-control"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
                     >
                       <option hidden>Select..</option>
                       <option>Yoga</option>
@@ -191,24 +197,19 @@ export default function AddArtical({ show, onHide, table }) {
                       <div className="text-danger fs-12">{errors.category}</div>
                     )}
                   </div>
-                 
                 </div>
                 <div className="form-group mb-3">
-                  <label className="text-black font-w500">SubCategory</label>
-                
+                  <label className="text-black font-w500">Tag</label>
+
                   <div className="contact-name">
                     <input
                       type="text"
                       className="form-control"
-                    
                       required="required"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      value={tag}
+                      onChange={(e) => setTag(e.target.value)}
                       placeholder="Subcategory"
                     />
-                    {/* {errors.category && (
-                      <div className="text-danger fs-12">{errors.category}</div>
-                    )} */}
                   </div>
                 </div>
                 <div className="form-group">

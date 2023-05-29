@@ -1,11 +1,12 @@
-import { SET_CURRENT_USER_ACTION } from "../actions/UserDetailsAction";
+import { SET_CURRENT_ARTICLE_ACTION } from "../actions/ArticleDetailsAction";
+
 
 const initialState = {
   currentData: [],
 };
 
 export default function UserDetailsReducer(state = initialState, action) {
-  if (action.type === SET_CURRENT_USER_ACTION) {
+  if (action.type === SET_CURRENT_ARTICLE_ACTION) {
     return {
       ...state,
       currentData: action.payload,

@@ -32,7 +32,7 @@ export default function Policies() {
   const [loader, setLoader] = useState("");
   let errorsObj = {
     policyText: "",
-    type:"",
+    type: "",
   };
   const [errors, setErrors] = useState(errorsObj);
 
@@ -41,7 +41,6 @@ export default function Policies() {
   };
 
   async function onSubmit(e) {
-
     e.preventDefault();
 
     let error = false;
@@ -61,8 +60,8 @@ export default function Policies() {
     }
 
     setLoader(true);
-    console.log(policyText,type,"body data")
-    postPolicy(policyText,type)
+    console.log(policyText, type, "body data");
+    postPolicy(policyText, type)
       .then((response) => {
         console.log(response, "post response");
         setLoader(false);
@@ -91,26 +90,26 @@ export default function Policies() {
       <PageTitle activeMenu="Upload Policy" motherMenu="Policies" />
       <div className="d-flex justify-content-end mb-3">
         <div>
-        <select
-          style={{
-            color: "#7e7e7e",
-            padding: " 10px",
-            borderColor: "lightgrey",
-            borderRadius: "6px",
-          }}
-          onChange={(e)=>setType(e.target.value)}
-          required
-        >
-          <option hidden>Select policy</option>
-          <option value="policy">Privacy Policy</option>
-          <option value="termAndCondition">Terms & Conditions</option>
-        </select>
-        {errors.type && <div className="text-danger fs-12">{errors.type}</div>}
+          <select
+            style={{
+              color: "#7e7e7e",
+              padding: " 10px",
+              borderColor: "lightgrey",
+              borderRadius: "6px",
+            }}
+            onChange={(e) => setType(e.target.value)}
+            required
+          >
+            <option hidden>Select policy</option>
+            <option value="policy">Privacy Policy</option>
+            <option value="termAndCondition">Terms & Conditions</option>
+          </select>
+          {errors.type && (
+            <div className="text-danger fs-12">{errors.type}</div>
+          )}
         </div>
-      
-       
       </div>
-      
+
       <Editor
         //initialValue={prescription}
         init={{
@@ -132,16 +131,17 @@ export default function Policies() {
         onEditorChange={handleChangeContent}
         name="prescription"
         value={policyText}
-        
       />
-      {errors.policyText && <div className="text-danger fs-12">{errors.policyText}</div>}
+      {errors.policyText && (
+        <div className="text-danger fs-12">{errors.policyText}</div>
+      )}
       <div className="d-flex justify-content-end mt-4">
         <button
           className="btn btn-primary btn-sm sharp"
           type="submit"
-            onClick={(e) => {
-              onSubmit(e);
-            }}
+          onClick={(e) => {
+            onSubmit(e);
+          }}
         >
           Send
         </button>

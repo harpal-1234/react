@@ -43,14 +43,14 @@ function UserDetails(props) {
           >
             <div>
               <img
-                src={dummy}
+                src={userData.profile}
                 width={100}
                 height={100}
                 className="text-center"
               />
             </div>
             <div className="text-left">
-              <h3 className="text-black ">{userData.fName}</h3>
+              <h3 className="text-black ">{userData.fName} {userData.lName}</h3>
             </div>
           </div>
         </Card.Header>
@@ -62,7 +62,15 @@ function UserDetails(props) {
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Address</h5>
-              <p className="">{userData?.address?.address},{userData?.address?.city},{userData?.address?.country}</p>
+              <p className="">
+                {userData?.address ? (
+                  (userData?.address?.address,
+                  userData?.address?.city,
+                  userData?.address?.country)
+                ) : (
+                  <span className="text-danger">Data not provided!</span>
+                )}
+              </p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Number Of Certification</h5>
@@ -111,8 +119,7 @@ function UserDetails(props) {
 
 const mapStateToProps = (state) => {
   return {
-  
-    currentData:state.UserData.currentData,
+    currentData: state.UserData.currentData,
   };
 };
 export default connect(mapStateToProps)(UserDetails);

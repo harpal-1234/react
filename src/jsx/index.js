@@ -113,6 +113,7 @@ import Policies from './pages/Policies'
 import Articals from './pages/Articals'
 import AddsManagement from './pages/AddsManagement'
 import UserDetails from './pages/UserDetails'
+import ArticleDetails from './pages/ArticleDetails'
 
 
 const Markup = () => {
@@ -139,7 +140,9 @@ const Markup = () => {
     { url: 'user-management', component: UserManagement },    
     { url: 'user-details', component: UserDetails },  
     /// Events
-    { url: 'artical-management', component: Articals }, 
+    { url: 'article-management', component: Articals }, 
+    { url: 'article-details', component: ArticleDetails }, 
+
     { url: 'advertise-management', component: AddsManagement }, 
     /// reports
     { url: 'reports', component: Reports }, 

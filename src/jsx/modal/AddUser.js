@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { uploadFile } from "react-s3";
@@ -215,6 +215,7 @@ export default function AddUser({ show, table, onHide }) {
     if (error) {
       return;
     }
+    setLoader(true);
     const file = new File([image], new Date().getTime());
    
     // console.log(file, "after file creation");
@@ -227,8 +228,7 @@ export default function AddUser({ show, table, onHide }) {
       certificateImage = await uploadFile(certificatefile, config);
       // console.log(responseImage, "after certificate upload");
     }
-    setLoader(true);
-    alert("alertingnnggggg")
+   
     postUser(
       responseImage.location,
       fname,
@@ -247,7 +247,7 @@ export default function AddUser({ show, table, onHide }) {
       countryCode
     )
       .then((response) => {
-        console.log(response, "vgvfdfhjvhfvhg");
+        // console.log(response, "vgvfdfhjvhfvhg");
         setLoader(false);
         notifyTopRight("");
         setImage("");
@@ -260,11 +260,15 @@ export default function AddUser({ show, table, onHide }) {
       })
       .catch((error) => {
         setLoader(false);
-        // notifyError(error.response.data.message);
-        console.log(error.response, "error");
-        setApiError(error.response.data.data);
+        notifyError(error.response.data.message);
+        console.log(error.response, "error")
       });
   }
+  useEffect(() => {
+    if(show) {
+       // alert('');
+    }
+   },[show]);
   return (
     <Modal className="modal fade" show={show} centered>
       <div className="">
