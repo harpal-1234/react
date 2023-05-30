@@ -228,7 +228,6 @@ export default function UserManagement(props) {
                   <th>
                     <strong>PHONE NUMBER</strong>
                   </th>
-               
                   <th>
                     <strong>CERTIFICATE</strong>
                   </th>
@@ -260,12 +259,14 @@ export default function UserManagement(props) {
                     </td>
                     <td>{item.email}</td>
                     <td>{item.phone}</td>
-                 
+
                     <td className="text-center">
                       <button
                         type="button"
                         className="btn btn-info py-2 fs-12"
-                        onClick={() => (setModal(true),setImage(item.fitnessCertificate))}
+                        onClick={() => (
+                          setModal(true), setImage(item.fitnessCertificate)
+                        )}
                       >
                         View
                       </button>
@@ -334,11 +335,7 @@ export default function UserManagement(props) {
           </Card.Body>
         </Card>
       </Col>
-      <ViewImage
-        show={modal}
-        image={image}
-        onHide={() => setModal(false)}
-      />
+      <ViewImage show={modal} image={image} onHide={() => setModal(false)} />
       <AddUser
         show={userModal}
         table={getTableData}

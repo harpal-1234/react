@@ -6,6 +6,7 @@ import { MultiSelect } from "../pages/MultiSelect";
 import { postUser } from "../../services/User/UserService";
 import PhoneInput from "react-phone-input-2";
 import Select from "react-select";
+import Spinner from "../common/Spinner";
 export default function AddUser({ show, table, onHide }) {
   const config = {
     bucketName: "traintab",
@@ -22,7 +23,8 @@ export default function AddUser({ show, table, onHide }) {
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   // const [address, setAddress] = useState("");
-  const [countryCode, setCountryCode] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
+  console.log(countryCode,"countryCode")
   const [phNumber, setPhNumber] = useState("");
   const [typeOfTrainer, setTypeOfTrainer] = useState([]);
   const [trainingLocation, setTrainingLocation] = useState([]);
@@ -122,7 +124,7 @@ export default function AddUser({ show, table, onHide }) {
   };
 
   async function onSubmit(e) {
-    setLoader(true);
+   
     e.preventDefault();
 
     let error = false;
@@ -153,8 +155,16 @@ export default function AddUser({ show, table, onHide }) {
     //   errorObj.address = "This Field is Required !";
     //   error = true;
     // }
-    if (phNumber === "") {
-      errorObj.phNumber = "Number is Required !";
+    // if (phNumber === "") {
+    //   errorObj.phNumber = "Number is Required !";
+    //   error = true;
+    // }
+    if (phNumber.length < 5) {
+      errorObj.phNumber = "Phone number must be in between 5 to 15 character long!";
+      error = true;
+    }
+    if (phNumber.length >15) {
+      errorObj.phNumber = "Phone number must be in between 5 to 15 character long!";
       error = true;
     }
     if (typeOfTrainer === "") {
@@ -214,7 +224,7 @@ export default function AddUser({ show, table, onHide }) {
     if (error) {
       return;
     }
-    
+    setLoader(true);
     const file = new File([image], new Date().getTime());
     if (file.size > 0) {
       responseImage = await uploadFile(file, config);
@@ -370,9 +380,10 @@ export default function AddUser({ show, table, onHide }) {
                     <label className="text-black font-w500">Phone Number</label>
                     <div className="contact-name d-flex">
                       <PhoneInput
-                        country={"eg"}
+                        country={"in"}
                         enableSearch={true}
-                        value={countryCode}
+                        // value={countryCode}
+                        value="+91"
                         onChange={(phone) => setCountryCode(phone)}
                       />
                       <input
@@ -594,6 +605,7 @@ export default function AddUser({ show, table, onHide }) {
           </form>
         </div>
       </div>
+      {loader && <Spinner />}
     </Modal>
   );
 }
