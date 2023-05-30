@@ -11,6 +11,7 @@ import {
   getNotification,
   getUsers,
   pushNotification,
+  rejectNotification,
 } from "../../services/Notification/NotificationService";
 import Spinner from "../common/Spinner";
 import { approveUser } from "../../services/User/UserService";
@@ -103,6 +104,27 @@ export default function Notification(props) {
         console.log(error.response, "helooooooooo");
         setLoader(false);
         notifyError("Something went wrong!");
+        if (error.response.data.statusCode === 401) {
+          localStorage.clear("authDetails");
+          props.history.push("/login");
+        }
+      });
+  }
+  function onReject(id) {
+    console.log(id)
+    setLoader(true);
+    rejectNotification(id)
+      .then((response) => {
+        notifyTopRight("Rejected successfully.");
+        getNotificationData();
+        setLoader(false);
+
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response, "helooooooooo");
+        setLoader(false);
+        notifyError(error.response.data.data);
         if (error.response.data.statusCode === 401) {
           localStorage.clear("authDetails");
           props.history.push("/login");
@@ -216,9 +238,9 @@ export default function Notification(props) {
                               //   props.history.push("/user-details")
                               // )}
                             >
-                              <b className="text-primary">{item.userName}</b>
+                              <b className="text-primary">{item.userName} </b>
                             </span>
-                            Resisterd on{" "}
+                             Resisterd on{" "}
                             {moment(item.createdAt).format("DD/MM/YYYY")}.
                           </p>
                         </div>
@@ -230,7 +252,7 @@ export default function Notification(props) {
                           >
                             Approve
                           </button>
-                          <button className="btn btn-danger fs-12 py-2">
+                          <button className="btn btn-danger fs-12 py-2" onClick={() => onReject(item._id)}>
                             Reject
                           </button>
                         </div>

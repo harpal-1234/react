@@ -35,7 +35,6 @@ export default function AddUser({ show, table, onHide }) {
   const [verifyPassword, setVerifyPassword] = useState("");
   const [apiError, setApiError] = useState("");
 
-  console.log(certificate, "certificate");
   let errorsObj = {
     image: "",
     fname: "",
@@ -133,20 +132,20 @@ export default function AddUser({ show, table, onHide }) {
       error = true;
     }
     if (fname === "") {
-      errorObj.fname = "Title is Required !";
+      errorObj.fname = "First Name is Required !";
       error = true;
     }
 
     if (lname === "") {
-      errorObj.lname = "This Field is Required !";
+      errorObj.lname = "Last Name is Required !";
       error = true;
     }
     if (email === "") {
-      errorObj.email = "Image is Required !";
+      errorObj.email = "Email is Required !";
       error = true;
     }
     if (dob === "") {
-      errorObj.dob = "Title is Required !";
+      errorObj.dob = "Date Of Birth is Required !";
       error = true;
     }
 
@@ -155,11 +154,11 @@ export default function AddUser({ show, table, onHide }) {
     //   error = true;
     // }
     if (phNumber === "") {
-      errorObj.phNumber = "Image is Required !";
+      errorObj.phNumber = "Number is Required !";
       error = true;
     }
     if (typeOfTrainer === "") {
-      errorObj.typeOfTrainer = "Title is Required !";
+      errorObj.typeOfTrainer = "This Field is Required!";
       error = true;
     }
 
@@ -168,11 +167,11 @@ export default function AddUser({ show, table, onHide }) {
       error = true;
     }
     if (services === "") {
-      errorObj.services = "Image is Required !";
+      errorObj.services = "This Field is Required !";
       error = true;
     }
     if (years === "") {
-      errorObj.years = "Title is Required !";
+      errorObj.years = "This Field is Required !";
       error = true;
     }
 
@@ -185,11 +184,11 @@ export default function AddUser({ show, table, onHide }) {
       error = true;
     }
     if (certificate === "") {
-      errorObj.certificate = "certificate is Required !";
+      errorObj.certificate = "This Field is Required !";
       error = true;
     }
     if (password === "") {
-      errorObj.password = "Title is Required !";
+      errorObj.password = "This Field is Required !";
       error = true;
     }
 
@@ -215,7 +214,7 @@ export default function AddUser({ show, table, onHide }) {
     if (error) {
       return;
     }
-    setLoader(true);
+    
     const file = new File([image], new Date().getTime());
     if (file.size > 0) {
       responseImage = await uploadFile(file, config);
@@ -227,7 +226,7 @@ export default function AddUser({ show, table, onHide }) {
       // console.log(responseImage, "after certificate upload");
     }
     const fitnessCertificate = [certificateImage.location];
-    console.log(fitnessCertificate, "array");
+    // console.log(fitnessCertificate, "array");
     postUser(
       responseImage.location,
       fname,
@@ -247,7 +246,7 @@ export default function AddUser({ show, table, onHide }) {
     )
       .then((response) => {
         // console.log(response, "vgvfdfhjvhfvhg");
-        setLoader(false);
+       
         notifyTopRight("");
         setImage("");
         setTypeOfTrainer([]);
@@ -256,10 +255,11 @@ export default function AddUser({ show, table, onHide }) {
         setPassword("");
         onHide();
         table();
+        setLoader(false);
       })
       .catch((error) => {
         setLoader(false);
-        notifyError(error.response.data.message);
+        notifyError(error.response.data.data);
         console.log(error.response, "error");
       });
   }
@@ -337,7 +337,7 @@ export default function AddUser({ show, table, onHide }) {
                     <label className="text-black font-w500">Email</label>
                     <div className="contact-name">
                       <input
-                        type="text"
+                        type="email"
                         className="form-control"
                         name="Date_Join"
                         required="required"

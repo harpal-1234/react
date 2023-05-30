@@ -228,9 +228,7 @@ export default function UserManagement(props) {
                   <th>
                     <strong>PHONE NUMBER</strong>
                   </th>
-                  <th>
-                    <strong>CATEGORY</strong>
-                  </th>
+               
                   <th>
                     <strong>CERTIFICATE</strong>
                   </th>
@@ -262,7 +260,7 @@ export default function UserManagement(props) {
                     </td>
                     <td>{item.email}</td>
                     <td>{item.phone}</td>
-                    <td>{item.typeOfTrainer}</td>
+                 
                     <td className="text-center">
                       <button
                         type="button"

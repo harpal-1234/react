@@ -3,6 +3,7 @@ import {
   GET_NOTIFICATION,
   GET_USERS,
   POST_NOTIFICATION,
+  REJECT_NOTIFICATION,
 } from "./NotificationEndpoints";
 
 export function getUsers() {
@@ -37,6 +38,18 @@ export function getNotification(currentPage, limit) {
   };
 
   return instance.get(GET_NOTIFICATION +`?page=${currentPage}&limit=${limit}`, {
+    headers: myHeaders,
+  });
+}
+export function rejectNotification(userId) {
+  const data = localStorage.getItem("tokenDetails");
+  const postData = {
+    userId,
+  };
+  const myHeaders = {
+    Authorization: `Bearer ${data}`,
+  };
+  return instance.post(REJECT_NOTIFICATION, postData, {
     headers: myHeaders,
   });
 }

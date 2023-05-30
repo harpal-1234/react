@@ -84,19 +84,19 @@ function UserDetails(props) {
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Type Of Trainer</h5>
-              <p className="">{userData.typeOfTrainer.map((item)=>(
+              <p className="w-50 text-right">{userData.typeOfTrainer.map((item)=>(
                 item + ","
               ))}</p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Training Location</h5>
-              <p className="">{userData.trainningLocation.map((item)=>(
+              <p className=" w-50 text-right">{userData.trainningLocation.map((item)=>(
                 item + ","
               ))}</p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Services</h5>
-              <p className="">{userData.services.map((item)=>(item +","))}</p>
+              <p className="w-50 text-right">{userData.services.map((item)=>(item +","))}</p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Years In Business</h5>

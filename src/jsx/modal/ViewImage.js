@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import dummyImage from "../../images/1.jpg"
 import { saveAs } from 'file-saver'
 export default function ViewImage({ show,image, onHide, }) {
-console.log(image,"image")
+// console.log(image,"image")
 
   const downloadImage = () => {
     saveAs(image, 'image.jpg') // Put your image url here.
@@ -14,14 +14,6 @@ console.log(image,"image")
        // alert('');
     }
    },[show]);
-
-  //  useEffect(() => {
-  //   if (open) {
-  //     // alert('');
-  //     let result = NewData();
-  //     setFilteredData(result);
-  //   }
-  // }, [open]);
   return (
     <Modal className="modal fade" show={show} centered>
         <div className='w-100'>
