@@ -25,11 +25,11 @@ export function getAllUsers(currentPage, limit, search) {
 export function deleteUser(id) {
   const data = localStorage.getItem("tokenDetails");
 
-  return instance.delete(DELETE_USERS, {
+  return instance.delete(DELETE_USERS + `?id=${id}`, {
     headers: {
       Authorization: `Bearer ${data}`,
     },
-    data: { id },
+    // data: { id },
   });
 }
 
@@ -74,19 +74,19 @@ export function postUser(
   countryCode
 ) {
   const postData = {
-    profile:responseImage,
-   fName:fname,
-    lName:lname,
+    profile: responseImage,
+    fName: fname,
+    lName: lname,
     email,
     dob,
-    phone:phNumber,
-    typeOfTrainer:typeOfTrainerSelected,
-    trainningLocation:locationSelected,
-    services:servicesSelected,
+    phone: phNumber,
+    typeOfTrainer: typeOfTrainerSelected,
+    trainningLocation: locationSelected,
+    services: servicesSelected,
     years,
     clients,
-    noOfCertificate:noOfCertificate,
-    fitnessCertificate:fitnessCertificate,
+    noOfCertificate: noOfCertificate,
+    fitnessCertificate: fitnessCertificate,
     password,
     countryCode,
   };

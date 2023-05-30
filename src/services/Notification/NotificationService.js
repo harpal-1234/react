@@ -41,10 +41,10 @@ export function getNotification(currentPage, limit) {
     headers: myHeaders,
   });
 }
-export function rejectNotification(userId) {
+export function rejectNotification(id) {
   const data = localStorage.getItem("tokenDetails");
   const postData = {
-    userId,
+    notificationId:id,
   };
   const myHeaders = {
     Authorization: `Bearer ${data}`,
