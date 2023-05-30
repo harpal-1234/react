@@ -28,12 +28,12 @@ export function login(email, password) {
   return instance.post(LOGIN, postData);
 }
 
-export function dashboard() {
+export function dashboard(filter) {
   const data = localStorage.getItem("tokenDetails");
   const myHeaders = {
     Authorization: `Bearer ${data}`,
   };
-  return instance.get(DASHBOARD, {
+  return instance.get(DASHBOARD +`?data=${filter}`, {
     headers: myHeaders,
   });
 }

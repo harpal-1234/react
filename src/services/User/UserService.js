@@ -69,7 +69,7 @@ export function postUser(
   years,
   clients,
   noOfCertificate,
-  certificateImage,
+  fitnessCertificate,
   password,
   countryCode
 ) {
@@ -85,8 +85,8 @@ export function postUser(
     services:servicesSelected,
     years,
     clients,
-    noOfCertificate,
-    fitnessCertificate:certificateImage,
+    noOfCertificate:noOfCertificate,
+    fitnessCertificate:fitnessCertificate,
     password,
     countryCode,
   };

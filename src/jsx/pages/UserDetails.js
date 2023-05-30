@@ -6,6 +6,7 @@ import PageTitle from "../layouts/PageTitle";
 import dummy from "../../images/user-icon3.png";
 import ViewImage from "../modal/ViewImage";
 import { connect } from "react-redux";
+import moment from "moment";
 function UserDetails(props) {
   const [modal, setModal] = useState(false);
   const userData = props.currentData;
@@ -58,9 +59,9 @@ function UserDetails(props) {
           <div className="text-black">
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Date of Birth</h5>
-              <p className="">23/5/1999</p>
+              <p className="">{moment(userData.dob).format("DD/MM/YYYY")}</p>
             </div>
-            <div className="d-flex justify-content-between align-items-center pb-3">
+            {/* <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Address</h5>
               <p className="">
                 {userData?.address ? (
@@ -71,10 +72,10 @@ function UserDetails(props) {
                   <span className="text-danger">Data not provided!</span>
                 )}
               </p>
-            </div>
+            </div> */}
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Number Of Certification</h5>
-              <p className="">4</p>
+              <p className="">{userData?.noOfCertificate}</p>
             </div>
 
             <div className="d-flex justify-content-between align-items-center pb-3">
@@ -82,12 +83,20 @@ function UserDetails(props) {
               <p className="">{userData.clients}</p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
+              <h5>Type Of Trainer</h5>
+              <p className="">{userData.typeOfTrainer.map((item)=>(
+                item + ","
+              ))}</p>
+            </div>
+            <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Training Location</h5>
-              <p className="">{userData.trainningLocation}</p>
+              <p className="">{userData.trainningLocation.map((item)=>(
+                item + ","
+              ))}</p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Services</h5>
-              <p className="">{userData.services}</p>
+              <p className="">{userData.services.map((item)=>(item +","))}</p>
             </div>
             <div className="d-flex justify-content-between align-items-center pb-3">
               <h5>Years In Business</h5>

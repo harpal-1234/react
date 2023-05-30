@@ -29,9 +29,10 @@ const Home = (props) => {
   const [users, setUsers] = useState("");
   const [programArticle, setProgramArticle] = useState("");
   const [tipsArticle, setTipsArticle] = useState("");
+  const [filter, setFilter] = useState("");
   function getDashboardData() {
     // setLoader(true);
-    dashboard()
+    dashboard(filter)
       .then((response) => {
         setUsers(response.data.data.user);
         setProgramArticle(response.data.data.programArticle);
@@ -49,7 +50,7 @@ const Home = (props) => {
 
   useEffect(() => {
     getDashboardData();
-  }, []);
+  }, [filter]);
   
   return (
     <>
@@ -84,16 +85,16 @@ const Home = (props) => {
           {/* <i className="fa fa-angle-down scale5 ml-3" />  */}
           </Dropdown.Toggle>
           <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
-            <Dropdown.Item className="dropdown-item" to="#">
+            <Dropdown.Item className="dropdown-item" to="#" onClick={()=>setFilter("today")}>
               Today
             </Dropdown.Item>
-            <Dropdown.Item className="dropdown-item" to="#">
+            <Dropdown.Item className="dropdown-item" to="#"  onClick={()=>setFilter("this week")}>
               This Week
             </Dropdown.Item>
-            <Dropdown.Item className="dropdown-item" to="#">
+            <Dropdown.Item className="dropdown-item" to="#"  onClick={()=>setFilter("this month")}>
               This Month
             </Dropdown.Item>
-            <Dropdown.Item className="dropdown-item" to="#">
+            <Dropdown.Item className="dropdown-item" to="#"  onClick={()=>setFilter("this year")}>
               This Year
             </Dropdown.Item>
           </Dropdown.Menu>

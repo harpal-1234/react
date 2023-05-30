@@ -75,7 +75,7 @@ export default function Articals(props) {
       slicedContent.length < textContent.length
         ? { slicedContent }
         : htmlContent;
-    console.log(displayContent, "hello");
+    // console.log(displayContent, "hello");
     return (
       <div
         dangerouslySetInnerHTML={{
@@ -108,7 +108,7 @@ export default function Articals(props) {
     deleteArticle(id)
       .then((response) => {
         getTableData();
-        notifyTopRight(response.data.data);
+        notifyTopRight(response.data.data.message);
 
         console.log(response);
         setLoader(false);
@@ -299,7 +299,7 @@ export default function Articals(props) {
                       )}
                       style={{ cursor: "pointer" }}
                     >
-                      {item.description.length > 50
+                      {item.description.length > 100
                         ? MyComponent(item.description)
                         : parse(item.description)}
                     </td>

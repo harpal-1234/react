@@ -35,6 +35,7 @@ export default function AddUser({ show, table, onHide }) {
   const [verifyPassword, setVerifyPassword] = useState("");
   const [apiError, setApiError] = useState("");
 
+  console.log(certificate, "certificate");
   let errorsObj = {
     image: "",
     fname: "",
@@ -83,20 +84,19 @@ export default function AddUser({ show, table, onHide }) {
     },
   ];
 
-
   const totalIds = [...typeOfTrainer];
   const typeOfTrainerSelected = totalIds?.map((item, i) => {
-    console.log(item?.value, "id...............");
+    // console.log(item?.value, "id...............");
     return item?.value;
   });
   const location = [...trainingLocation];
   const locationSelected = location?.map((item, i) => {
-    console.log(item?.value, "id...............");
+    // console.log(item?.value, "id...............");
     return item?.value;
   });
   const service = [...services];
   const servicesSelected = service?.map((item, i) => {
-    console.log(item?.value, "id...............");
+    // console.log(item?.value, "id...............");
     return item?.value;
   });
 
@@ -185,7 +185,7 @@ export default function AddUser({ show, table, onHide }) {
       error = true;
     }
     if (certificate === "") {
-      errorObj.certificate = "Image is Required !";
+      errorObj.certificate = "certificate is Required !";
       error = true;
     }
     if (password === "") {
@@ -217,18 +217,17 @@ export default function AddUser({ show, table, onHide }) {
     }
     setLoader(true);
     const file = new File([image], new Date().getTime());
-   
-    // console.log(file, "after file creation");
     if (file.size > 0) {
       responseImage = await uploadFile(file, config);
-      // console.log(responseImage, "after upload");
     }
-    const certificatefile = new File([image], new Date().getTime());
+
+    const certificatefile = new File([certificate], new Date().getTime());
     if (certificatefile.size > 0) {
       certificateImage = await uploadFile(certificatefile, config);
       // console.log(responseImage, "after certificate upload");
     }
-   
+    const fitnessCertificate = [certificateImage.location];
+    console.log(fitnessCertificate, "array");
     postUser(
       responseImage.location,
       fname,
@@ -242,7 +241,7 @@ export default function AddUser({ show, table, onHide }) {
       years,
       clients,
       noOfCertificate,
-      certificateImage.location,
+      fitnessCertificate,
       password,
       countryCode
     )
@@ -261,14 +260,14 @@ export default function AddUser({ show, table, onHide }) {
       .catch((error) => {
         setLoader(false);
         notifyError(error.response.data.message);
-        console.log(error.response, "error")
+        console.log(error.response, "error");
       });
   }
   useEffect(() => {
-    if(show) {
-       // alert('');
+    if (show) {
+      // alert('');
     }
-   },[show]);
+  }, [show]);
   return (
     <Modal className="modal fade" show={show} centered>
       <div className="">
@@ -284,7 +283,7 @@ export default function AddUser({ show, table, onHide }) {
                 <span>×</span>
               </button>
             </div>
-            <div className="modal-body">
+            <div className="modal-body" style={{ overflow: "scroll", height: "500px" }}>
               <i className="flaticon-cancel-12 close"></i>
               <div className="add-contact-box">
                 <div className="add-contact-content">
@@ -526,10 +525,11 @@ export default function AddUser({ show, table, onHide }) {
                     <div className="contact-name">
                       <input
                         type="file"
+                        accept="image/*"
                         className="form-control"
                         name="Date_Join"
                         required="required"
-                        onChange={(e) => setCertificate(e.target.value)}
+                        onChange={(e) => setCertificate(e.target.files[0])}
                         placeholder="Certificate"
                       />
                     </div>
