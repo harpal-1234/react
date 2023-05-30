@@ -59,7 +59,7 @@ export default function AddUser({ show, table, onHide }) {
   const options = [
     { value: "Personal Trainer", label: "Personal Trainer" },
     { value: "Group Fitness Instructor", label: "Group Fitness Instructor" },
-    { value: "Sports Coach ", label: "Sports Coach " },
+    { value: "Sports Coach", label: "Sports Coach" },
     { value: "Lifestyle Coach", label: "Lifestyle Coach" },
     { value: "Athletic Trainer", label: "Athletic Trainer" },
     { value: "Bodybuilding Coach", label: "Bodybuilding Coach" },
@@ -75,7 +75,7 @@ export default function AddUser({ show, table, onHide }) {
   const serviceOptions = [
     { value: "In Person", label: "In Person" },
     { value: "Virtual", label: "Virtual" },
-    { value: "1-0n-1 Personal Training ", label: "1-0n-1 Personal Training " },
+    { value: "1-On-1 Personal Training", label: "1-On-1 Personal Training" },
     { value: "Partner Personal Training", label: "Partner Personal Training" },
     { value: "Group Training", label: "Group Training" },
     {

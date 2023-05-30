@@ -127,7 +127,7 @@ export default function AddsManagement(props) {
   useEffect(() => {
     getTableData();
     console.log(currentPage, " new 111");
-  }, [currentPage]);
+  }, [currentPage,search]);
 
 
  
