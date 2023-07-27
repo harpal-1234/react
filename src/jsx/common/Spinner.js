@@ -7,7 +7,7 @@ export default function Spinner() {
    
         <div>
         <Placeholder.Paragraph rows={8} />
-        <Loader backdrop content="loading..." size="lg" />
+        <Loader backdrop content="loading..." size="lg" style={{zIndex:1}}/>
       </div>
     );
 }

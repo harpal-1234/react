@@ -166,12 +166,15 @@ export default function Notification(props) {
         setLoader(false);
       })
       .catch((error) => {
-        // notifyError(error.response.data.data)
-        console.log(error.response, "helooooooooo");
         if (error.response.data.statusCode === 401) {
           localStorage.clear("tokenDetails");
           props.history.push("/login");
         }
+        else if (error.response.data.statusCode === 500) {
+          notifyError("Something went wrong please try again!")
+          setLoader(false);
+        }
+        else notifyError(error.response.data.data);
       });
   }
 

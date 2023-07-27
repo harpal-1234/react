@@ -3,6 +3,7 @@ import { Dropdown, Modal } from "react-bootstrap";
 import { uploadFile } from "react-s3";
 import { toast } from "react-toastify";
 import { postAdvertise } from "../../services/Advertise/AdvertiseService";
+import Spinner from "../common/Spinner";
 window.Buffer = window.Buffer || require("buffer").Buffer;
 export default function Advertisement({ show, table, onHide }) {
   const config = {
@@ -225,6 +226,7 @@ export default function Advertisement({ show, table, onHide }) {
           </div>
         </form>
       </div>
+      {loader && <Spinner />}
     </Modal>
   );
 }

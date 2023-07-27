@@ -7,6 +7,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
 import { uploadFile } from "react-s3";
 import { postArticle } from "../../services/ArticleService/ArticleService";
+import Spinner from "../common/Spinner";
 window.Buffer = window.Buffer || require("buffer").Buffer;
 export default function AddArtical({ show, onHide, table }) {
   const config = {
@@ -58,7 +59,7 @@ export default function AddArtical({ show, onHide, table }) {
     setDescription(content);
   };
   async function onSubmit(e) {
-    setLoader(true);
+    
     e.preventDefault();
 
     let error = false;
@@ -85,14 +86,8 @@ export default function AddArtical({ show, onHide, table }) {
     if (error) {
       return;
     }
-    // const file = new File([image], new Date().getTime());
-    // console.log(file, "after file creation");
-    // if (file.size > 0) {
+    setLoader(true);
     responseImage = await uploadFile(image, config);
-    // responseImage = await uploadFile(file, config);
-    // console.log(responseImage, "after upload");
-    // }
-
     postArticle(responseImage.location, title, category, description,type,tag)
       .then((response) => {
         console.log(response, "vgvfdfhjvhfvhg");
@@ -258,6 +253,7 @@ export default function AddArtical({ show, onHide, table }) {
           </div>
         </form>
       </div>
+      {loader && <Spinner />}
     </Modal>
   );
 }

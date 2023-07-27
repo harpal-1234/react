@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
-import { useDispatch } from "react-redux";
+
 
 export default function Pagination({ pageCount, pageValue, setPage }) {
-  const dispatch = useDispatch();
-  //   console.log(pageCount, pageValue, "pagecount");
+  
 
   function newFunction(data) {
     console.log(data, "value in function");

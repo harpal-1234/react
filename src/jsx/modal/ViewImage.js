@@ -11,7 +11,6 @@ export default function ViewImage({ show,image, onHide, }) {
 
   useEffect(() => {
     if(show) {
-       // alert('');
     }
    },[show]);
   return (

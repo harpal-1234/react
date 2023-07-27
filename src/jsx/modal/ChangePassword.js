@@ -14,9 +14,7 @@ function ChangePassword({ password, onHide,props }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // console.log(oldPassword, newPassword, confirmPassword, " on Change data");
-
-  // const dispatch = useDispatch();
+ 
   const notifyTopRight = () => {
     toast.success("✅ Password Updated successfully !", {
       position: "top-right",
@@ -70,7 +68,6 @@ function ChangePassword({ password, onHide,props }) {
 
     changePasswoard(oldPassword, newPassword)
       .then((response) => {
-
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");

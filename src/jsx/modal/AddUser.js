@@ -24,7 +24,7 @@ export default function AddUser({ show, table, onHide }) {
   const [dob, setDob] = useState("");
   // const [address, setAddress] = useState("");
   const [countryCode, setCountryCode] = useState("+91");
-  console.log(countryCode,"countryCode")
+  // console.log(countryCode,"countryCode")
   const [phNumber, setPhNumber] = useState("");
   const [typeOfTrainer, setTypeOfTrainer] = useState([]);
   const [trainingLocation, setTrainingLocation] = useState([]);
