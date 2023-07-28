@@ -187,6 +187,10 @@ export default function AddArtical({ show, onHide, table }) {
                       <option>Workout</option>
                       <option>Strength</option>
                       <option>Cardio</option>
+                      <option>Aerobic</option>
+                      <option>Core Training</option>
+                      <option>Happiness</option>
+                      <option>Wellness</option>
                     </select>
                     {errors.category && (
                       <div className="text-danger fs-12">{errors.category}</div>
