@@ -13,8 +13,8 @@ export default function AddArtical({ show, onHide, table }) {
   const config = {
     bucketName: "traintab",
     region: "us-west-2",
-    accessKeyId: "AKIAWTWYHC4USCNNQDXK",
-    secretAccessKey: "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",
+    accessKeyId: "AKIAWTWYHC4UXKAFO6WZ",
+    secretAccessKey: "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",
     // successActionstatus: 201,
   };
   let responseImage = {};
